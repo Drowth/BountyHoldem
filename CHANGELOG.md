@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.3 (2026-11-07)
+
+- Closing the table window while hosting now closes your table. Before, bots and auto-deal kept playing on a table nobody could see, and hosting again picked up that old table.
+
 ## 1.1.2 (2026-11-07)
 
 - Window size is now a small drag bar on the right edge of the lobby and the table. Drag up for bigger, down for smaller. The size is remembered per character.

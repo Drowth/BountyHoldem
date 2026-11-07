@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.2 by Lee
+-- Bounty Hold'em v1.1.3 by Lee
 -- PokerHost.lua: host mode, one client deals for the group
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -724,9 +724,19 @@ end
 local HandleHostCommand -- Forward declaration
 
 local function AddSeatBotButtons()
-    local tbl = _G["PokerTableFrame"]
+    local tbl = (PokerUI and PokerUI.TableFrame) or _G["PokerTableFrame"]
     if not tbl or not seatMarkers or H.seatBotButtons then return end
     H.seatBotButtons = {}
+
+    -- Closing the table window as host closes the table too. Otherwise bots and
+    -- auto-deal keep running on a table nobody can see, and the next "host"
+    -- picks up that old table instead of a fresh one
+    tbl:HookScript("OnHide", function()
+        if H.active then
+            Say("You closed the table window, so your table is closed.")
+            H.Close()
+        end
+    end)
     for s = 1, 9 do
         local marker = seatMarkers[s]
         if marker and marker.button then
@@ -1045,7 +1055,7 @@ end
 
 -- "Host Table" button on the join window, so /poker host is optional
 local function AddHostButton()
-    local role = _G["PokerJoinTableFrame"]
+    local role = (PokerUI and PokerUI.RoleFrame) or _G["PokerJoinTableFrame"]
     if not role or H.hostBtn then return end
     local btn = CreateFrame("Button", nil, role, "GameMenuButtonTemplate")
     btn:SetSize(120, 28)
