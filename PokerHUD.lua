@@ -1,7 +1,9 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.0 by Lee
+-- Bounty Hold'em v1.1.1 by Lee
 -- PokerHUD.lua: large board, hand panel, winner banner and chip popups
 -- =========================================================================
+-- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
+if POKER_OWNER and POKER_OWNER ~= (...) then return end
 -- Puts the key information front and centre:
 --   * Large board cards on the felt with a FLOP / TURN / RIVER callout
 --   * Hand panel under the table: hole cards, current hand name, stack and a

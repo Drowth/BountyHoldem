@@ -1,7 +1,9 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.0 by Lee
+-- Bounty Hold'em v1.1.1 by Lee
 -- PokerEconomy.lua: chip earning, saved balance and table sync
 -- =========================================================================
+-- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
+if POKER_OWNER and POKER_OWNER ~= (...) then return end
 -- Kills earn chips, saved per character in PokerChipsDB. Your full balance
 -- is your stack when seated, and the host's BANKROLL_SET messages keep the
 -- saved balance in step during play
