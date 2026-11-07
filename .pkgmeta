@@ -1,0 +1,9 @@
+package-as: BountyHoldem
+
+ignore:
+  - art
+  - README.md
+  - CHANGELOG.md
+  - .github
+  - .gitignore
+  - CURSEFORGE_KIT.md

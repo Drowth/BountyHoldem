@@ -1,0 +1,6 @@
+# Astra's working files and briefs stay local
+art/
+.release/
+*.zip
+Thumbs.db
+desktop.ini
