@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.2 (2026-11-07)
+
+- Window size is now a small drag bar on the right edge of the lobby and the table. Drag up for bigger, down for smaller. The size is remembered per character.
+- Resizing keeps the window where you put it instead of jumping back to the centre
+- The table's Settings button is now Volume
+- The lobby art always stays inside its own window
+
 ## 1.1.1 (2026-11-07)
 
 - Fixed kills paying twice and two chip pots showing when an old copy in AddOns\Poker was still installed. The old copy is now switched off automatically; /reload and delete that folder.

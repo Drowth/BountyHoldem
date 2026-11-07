@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.1 by Lee
+-- Bounty Hold'em v1.1.2 by Lee
 -- poker.lua: table client (lobby, table, seats, betting, animations)
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -231,7 +231,7 @@ end
 do
     local function PrintPokerWelcome_P()
         local teal = "|cff00cccc"
-        print(teal .. "Bounty Hold'em v1.1.1 by Lee loaded. Type /poker to get started!|r")
+        print(teal .. "Bounty Hold'em v1.1.2 by Lee loaded. Type /poker to get started!|r")
     end
     local f = CreateFrame("Frame")
     f:RegisterEvent("ADDON_LOADED")
@@ -271,7 +271,7 @@ end
 RoleFrame.title = RoleFrame:CreateFontString(nil, "OVERLAY")
 RoleFrame.title:SetFontObject("GameFontHighlight")
 RoleFrame.title:SetPoint("LEFT", RoleFrame.TitleBg, "LEFT", 10, 0)
-RoleFrame.title:SetText("Bounty Hold'em v1.1.1 by Lee")
+RoleFrame.title:SetText("Bounty Hold'em v1.1.2 by Lee")
 
 -- Allow dragging the lobby frame
 RoleFrame:SetMovable(true)
@@ -288,13 +288,18 @@ end)
 local pokerScale = 1.0
 
 -- Applies the lobby scale
-local function ApplyPokerScale(scale)
+-- keepPlace keeps the window's centre where it is on screen, otherwise it re-centres
+local function ApplyPokerScale(scale, keepPlace)
     pokerScale = scale
+    local cx, cy = RoleFrame:GetCenter()
+    local old = RoleFrame:GetScale()
     RoleFrame:SetScale(scale)
-    
-    -- Re-centre after scaling
     RoleFrame:ClearAllPoints()
-    RoleFrame:SetPoint("CENTER")
+    if keepPlace and cx then
+        RoleFrame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", cx * old / scale, cy * old / scale)
+    else
+        RoleFrame:SetPoint("CENTER")
+    end
 end
 
 ApplyPokerScale(pokerScale)
@@ -305,73 +310,7 @@ roleScaleBtn:SetSize(80, 28)
 roleScaleBtn:SetText("Settings")
 roleScaleBtn:SetPoint("TOPRIGHT", RoleFrame, "TOPRIGHT", -12, -32)
 
--- Step 2: scale popup, hidden until opened
-local roleScalePopup = CreateFrame("Frame", nil, RoleFrame, "BackdropTemplate")
-roleScalePopup:SetSize(220, 68)
-roleScalePopup:SetBackdrop({
-    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    edgeSize = 12,
-    insets = { left = 4, right = 4, top = 4, bottom = 4 }
-})
-roleScalePopup:SetBackdropColor(0, 0, 0, 0.95)
-roleScalePopup:SetPoint("BOTTOMLEFT", RoleFrame, "TOPLEFT", 0, 0) -- Sits just above the frame
-roleScalePopup:SetFrameStrata("FULLSCREEN_DIALOG")
-roleScalePopup:Hide()
-
--- Step 3: scale slider inside the popup
-local roleScaleSlider = CreateFrame("Slider", "PokerRoleScaleSlider", roleScalePopup, "OptionsSliderTemplate")
-roleScaleSlider:SetOrientation("HORIZONTAL")
-roleScaleSlider:SetSize(180, 18)
-roleScaleSlider:SetPoint("CENTER", roleScalePopup, "CENTER", 0, 3)
-roleScaleSlider:SetMinMaxValues(0.50, 1.50)
-roleScaleSlider:SetValueStep(0.001)
-roleScaleSlider:SetValue(pokerScale)
-roleScaleSlider:SetObeyStepOnDrag(false)
-
-local roleScaleTitle = roleScalePopup:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-roleScaleTitle:SetFont("Fonts\\FRIZQT__.TTF", 9, "OUTLINE")
-roleScaleTitle:SetTextColor(1, 1, 1, 1)
-roleScaleTitle:SetText("RESOLUTION")
-roleScaleTitle:SetPoint("BOTTOM", roleScalePopup, "BOTTOM", 0, 12)
-roleScaleTitle:SetJustifyH("CENTER")
-
-_G[roleScaleSlider:GetName() .. 'Low']:SetText("0.50x")
-_G[roleScaleSlider:GetName() .. 'High']:SetText("1.50x")
-_G[roleScaleSlider:GetName() .. 'Low']:ClearAllPoints()
-_G[roleScaleSlider:GetName() .. 'Low']:SetPoint("TOPLEFT", roleScaleSlider, "BOTTOMLEFT", -4, 0)
-_G[roleScaleSlider:GetName() .. 'High']:ClearAllPoints()
-_G[roleScaleSlider:GetName() .. 'High']:SetPoint("TOPRIGHT", roleScaleSlider, "BOTTOMRIGHT", 4, 0)
-_G[roleScaleSlider:GetName() .. 'Text']:SetText("") -- Untitled
-
--- Live value readout above the slider
-local roleScaleValueLabel = roleScalePopup:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-roleScaleValueLabel:SetPoint("BOTTOM", roleScaleSlider, "TOP", 0, 2)
-roleScaleValueLabel:SetTextColor(1, 1, 1, 1)
-roleScaleValueLabel:SetText(string.format("%.2fx", pokerScale))
-
-local pendingPokerScale = pokerScale
-roleScaleSlider:SetScript("OnValueChanged", function(self, value)
-    pendingPokerScale = value
-    roleScaleValueLabel:SetText(string.format("%.2fx", value))
-end)
-roleScaleSlider:EnableMouse(true)
-roleScaleSlider:SetScript("OnMouseUp", function(self)
-    pokerScale = pendingPokerScale
-    ApplyPokerScale(pokerScale)
-end)
-
--- Tick marks for visual reference
-for i = 0, 10 do
-    local tick = roleScaleSlider:CreateTexture(nil, "OVERLAY")
-    tick:SetDrawLayer("OVERLAY", 7)
-    tick:SetColorTexture(1, 1, 1, 0.2)
-    tick:SetSize(2, 7)
-    local percent = i / 10
-    tick:SetPoint("BOTTOMLEFT", roleScaleSlider, "BOTTOMLEFT", percent * (roleScaleSlider:GetWidth() - 16) + 8, 5)
-end
-
--- Step 4: volume popup, hidden until opened
+-- Step 2: volume popup, hidden until opened
 local roleVolumePopup = CreateFrame("Frame", nil, RoleFrame, "BackdropTemplate")
 roleVolumePopup:SetSize(220, 68)
 roleVolumePopup:SetBackdrop({
@@ -381,11 +320,11 @@ roleVolumePopup:SetBackdrop({
     insets = { left = 4, right = 4, top = 4, bottom = 4 }
 })
 roleVolumePopup:SetBackdropColor(0, 0, 0, 0.95)
-roleVolumePopup:SetPoint("BOTTOMLEFT", RoleFrame, "TOPLEFT", roleScalePopup:GetWidth(), 0) -- Right of the scale popup
+roleVolumePopup:SetPoint("BOTTOMLEFT", RoleFrame, "TOPLEFT", 0, 0) -- Sits just above the frame
 roleVolumePopup:SetFrameStrata("FULLSCREEN_DIALOG")
 roleVolumePopup:Hide()
 
--- Step 5: volume slider inside the popup
+-- Step 3: volume slider inside the popup
 local roleVolumeSlider = CreateFrame("Slider", "PokerRoleVolumeSlider", roleVolumePopup, "OptionsSliderTemplate")
 roleVolumeSlider:SetOrientation("HORIZONTAL")
 roleVolumeSlider:SetSize(180, 18)
@@ -427,18 +366,12 @@ end)
 
 -- SCALE button click
 roleScaleBtn:SetScript("OnClick", function()
-    if roleScalePopup:IsShown() then
-        roleScalePopup:Hide()
-        roleVolumePopup:Hide()
-    else
-        roleScalePopup:Show()
-        roleVolumePopup:Show()
-    end
+    -- Size now lives on the drag bar at the window's edge (PokerSizeBar.lua)
+    roleVolumePopup:SetShown(not roleVolumePopup:IsShown())
 end)
 
 -- Close the popups when the lobby hides
 RoleFrame:HookScript("OnHide", function()
-    roleScalePopup:Hide()
     roleVolumePopup:Hide()
 end)
 
@@ -473,7 +406,7 @@ TableFrame:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 TableFrame.title = TableFrame:CreateFontString(nil, "OVERLAY")
 TableFrame.title:SetFontObject("GameFontHighlight")
 TableFrame.title:SetPoint("LEFT", TableFrame.TitleBg, "LEFT", 10, 0)
-TableFrame.title:SetText("Bounty Hold'em v1.1.1 by Lee")
+TableFrame.title:SetText("Bounty Hold'em v1.1.2 by Lee")
 
 -- Vertical button stack, top left (110 x 28)
 local function CreateTopLeftBtn(label, anchorFrame)
@@ -1392,13 +1325,18 @@ guideBtn:SetScript("OnClick", function() ToggleGuidePanel() end)
 local tablePokerScale = 1.0
 
 -- Applies the table scale
-local function ApplyTablePokerScale(scale)
+-- keepPlace keeps the window's centre where it is on screen, otherwise it re-centres
+local function ApplyTablePokerScale(scale, keepPlace)
     tablePokerScale = scale
+    local cx, cy = TableFrame:GetCenter()
+    local old = TableFrame:GetScale()
     TableFrame:SetScale(scale)
-    
-    -- Re-centre after scaling
     TableFrame:ClearAllPoints()
-    TableFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+    if keepPlace and cx then
+        TableFrame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", cx * old / scale, cy * old / scale)
+    else
+        TableFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+    end
 
     -- Keep the Guide panel scaled and docked to TableFrame
     if guidePanel then
@@ -1423,76 +1361,10 @@ ApplyTablePokerScale(tablePokerScale)
 -- Step 1: SCALE button on the table frame
 local tableScaleBtn = CreateFrame("Button", nil, TableFrame, "GameMenuButtonTemplate")
 tableScaleBtn:SetSize(90, 28)
-tableScaleBtn:SetText("Settings")
+tableScaleBtn:SetText("Volume")
 tableScaleBtn:SetPoint("TOPRIGHT", TableFrame, "TOPRIGHT", -12, -30)
 
--- Step 2: scale popup, hidden until opened
-local tableScalePopup = CreateFrame("Frame", nil, TableFrame, "BackdropTemplate")
-tableScalePopup:SetSize(220, 68)
-tableScalePopup:SetBackdrop({
-    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    edgeSize = 12,
-    insets = { left = 4, right = 4, top = 4, bottom = 4 }
-})
-tableScalePopup:SetBackdropColor(0, 0, 0, 0.95)
-tableScalePopup:SetPoint("BOTTOMLEFT", TableFrame, "TOPLEFT", 0, 0) -- Sits just above the frame
-tableScalePopup:SetFrameStrata("FULLSCREEN_DIALOG")
-tableScalePopup:Hide()
-
--- Step 3: scale slider inside the popup
-local tableScaleSlider = CreateFrame("Slider", "PokerTableScaleSlider", tableScalePopup, "OptionsSliderTemplate")
-tableScaleSlider:SetOrientation("HORIZONTAL")
-tableScaleSlider:SetSize(180, 18)
-tableScaleSlider:SetPoint("CENTER", tableScalePopup, "CENTER", 0, 3)
-tableScaleSlider:SetMinMaxValues(0.50, 1.50)
-tableScaleSlider:SetValueStep(0.001)
-tableScaleSlider:SetValue(tablePokerScale)
-tableScaleSlider:SetObeyStepOnDrag(false)
-
-local tableScaleTitle = tableScalePopup:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-tableScaleTitle:SetFont("Fonts\\FRIZQT__.TTF", 9, "OUTLINE")
-tableScaleTitle:SetTextColor(1, 1, 1, 1)
-tableScaleTitle:SetText("RESOLUTION")
-tableScaleTitle:SetPoint("BOTTOM", tableScalePopup, "BOTTOM", 0, 12)
-tableScaleTitle:SetJustifyH("CENTER")
-
-_G[tableScaleSlider:GetName() .. 'Low']:SetText("0.50x")
-_G[tableScaleSlider:GetName() .. 'High']:SetText("1.50x")
-_G[tableScaleSlider:GetName() .. 'Low']:ClearAllPoints()
-_G[tableScaleSlider:GetName() .. 'Low']:SetPoint("TOPLEFT", tableScaleSlider, "BOTTOMLEFT", -4, 0)
-_G[tableScaleSlider:GetName() .. 'High']:ClearAllPoints()
-_G[tableScaleSlider:GetName() .. 'High']:SetPoint("TOPRIGHT", tableScaleSlider, "BOTTOMRIGHT", 4, 0)
-_G[tableScaleSlider:GetName() .. 'Text']:SetText("") -- Untitled
-
--- Live value readout above the slider
-local tableScaleValueLabel = tableScalePopup:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-tableScaleValueLabel:SetPoint("BOTTOM", tableScaleSlider, "TOP", 0, 2)
-tableScaleValueLabel:SetTextColor(1, 1, 1, 1)
-tableScaleValueLabel:SetText(string.format("%.2fx", tablePokerScale))
-
-local pendingTablePokerScale = tablePokerScale
-tableScaleSlider:SetScript("OnValueChanged", function(self, value)
-    pendingTablePokerScale = value
-    tableScaleValueLabel:SetText(string.format("%.2fx", value))
-end)
-tableScaleSlider:EnableMouse(true)
-tableScaleSlider:SetScript("OnMouseUp", function(self)
-    tablePokerScale = pendingTablePokerScale
-    ApplyTablePokerScale(tablePokerScale)
-end)
-
--- Tick marks for visual reference
-for i = 0, 10 do
-    local tick = tableScaleSlider:CreateTexture(nil, "OVERLAY")
-    tick:SetDrawLayer("OVERLAY", 7)
-    tick:SetColorTexture(1, 1, 1, 0.2)
-    tick:SetSize(2, 7)
-    local percent = i / 10
-    tick:SetPoint("BOTTOMLEFT", tableScaleSlider, "BOTTOMLEFT", percent * (tableScaleSlider:GetWidth() - 16) + 8, 5)
-end
-
--- Step 4: volume popup, hidden until opened
+-- Step 2: volume popup, hidden until opened
 local tableVolumePopup = CreateFrame("Frame", nil, TableFrame, "BackdropTemplate")
 tableVolumePopup:SetSize(220, 68)
 tableVolumePopup:SetBackdrop({
@@ -1502,11 +1374,11 @@ tableVolumePopup:SetBackdrop({
     insets = { left = 4, right = 4, top = 4, bottom = 4 }
 })
 tableVolumePopup:SetBackdropColor(0, 0, 0, 0.95)
-tableVolumePopup:SetPoint("BOTTOMLEFT", TableFrame, "TOPLEFT", tableScalePopup:GetWidth(), 0) -- Right of the scale popup
+tableVolumePopup:SetPoint("BOTTOMLEFT", TableFrame, "TOPLEFT", 0, 0) -- Sits just above the frame
 tableVolumePopup:SetFrameStrata("FULLSCREEN_DIALOG")
 tableVolumePopup:Hide()
 
--- Step 5: volume slider inside the popup
+-- Step 3: volume slider inside the popup
 local tableVolumeSlider = CreateFrame("Slider", "PokerTableVolumeSlider", tableVolumePopup, "OptionsSliderTemplate")
 tableVolumeSlider:SetOrientation("HORIZONTAL")
 tableVolumeSlider:SetSize(180, 18)
@@ -3249,13 +3121,8 @@ end
 
 -- Table SCALE button click
 tableScaleBtn:SetScript("OnClick", function()
-    if tableScalePopup:IsShown() then
-        tableScalePopup:Hide()
-        tableVolumePopup:Hide()
-    else
-        tableScalePopup:Show()
-        tableVolumePopup:Show()
-    end
+    -- Size now lives on the drag bar at the window's edge (PokerSizeBar.lua)
+    tableVolumePopup:SetShown(not tableVolumePopup:IsShown())
 end)
 
 -- Join Table click: also adds your own portrait
@@ -3269,12 +3136,7 @@ joinTableBtn:SetScript("OnClick", function()
     -- Hide the lobby
     RoleFrame:Hide()
     
-    -- Match the table scale to the lobby scale
-    tablePokerScale = pokerScale
-    tableScaleSlider:SetValue(tablePokerScale)
-    tableScaleValueLabel:SetText(string.format("%.2fx", tablePokerScale))
-    
-    -- Apply that scale and show the table
+    -- Show the table at its own saved size, centred
     ApplyTablePokerScale(tablePokerScale)
     TableFrame:Show()
 end)
@@ -4176,6 +4038,9 @@ local __U = {
     decisionBox          = decisionBox,
     joinTableBtn         = joinTableBtn,
     roleScaleBtn         = roleScaleBtn,
+    RoleFrame            = RoleFrame,
+    ApplyPokerScale      = ApplyPokerScale,
+    ApplyTablePokerScale = ApplyTablePokerScale,
     roleBackground       = roleBackground,
     potText              = potText,
 
@@ -5407,10 +5272,9 @@ SlashCmdList["POKER"] = function(msg)
         return
     end
 
-    -- Toggle the lobby; showing it also opens the scale and volume popups
+    -- Toggle the lobby; volume sits behind the Settings gear, size on the edge drag bar
     if RoleFrame:IsShown() then
         RoleFrame:Hide()
-        if roleScalePopup then roleScalePopup:Hide() end
         if roleVolumePopup then roleVolumePopup:Hide() end
     else
         RoleFrame:ClearAllPoints()
@@ -5418,9 +5282,6 @@ SlashCmdList["POKER"] = function(msg)
         RoleFrame:Show()
         -- Ask for a snapshot
         Poker_SendAddonMessage("PokerTable", "PLAYER_WAITING:" .. UnitName("player"), Poker_Channel())
-        -- Sliders open by default
-        if roleScalePopup then roleScalePopup:Show() end
-        if roleVolumePopup then roleVolumePopup:Show() end
     end
 end
 
@@ -5677,7 +5538,6 @@ TableFrame:HookScript("OnHide", function()
     SendLeaveMessage("closed")
 
     -- Hide the popups
-    if tableScalePopup then tableScalePopup:Hide() end
     if tableVolumePopup then tableVolumePopup:Hide() end
 
     -- Re-centre for next time
