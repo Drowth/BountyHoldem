@@ -1,7 +1,9 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.0 by Lee
+-- Bounty Hold'em v1.1.1 by Lee
 -- PokerCamp.lua: sitting at a campfire opens the poker window
 -- =========================================================================
+-- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
+if POKER_OWNER and POKER_OWNER ~= (...) then return end
 -- Counts as a campfire when either:
 --   * the Cozy Fire buff is on you, or
 --   * you lit a Basic Campfire recently and are standing next to it

@@ -1,7 +1,10 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.0 by Lee
+-- Bounty Hold'em v1.1.1 by Lee
 -- PokerNet.lua: networking layer for every client and the host
 -- =========================================================================
+-- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
+if POKER_OWNER and POKER_OWNER ~= (...) then return end
+POKER_OWNER = ...
 -- Media path follows the installed folder name, so a renamed package still loads its art
 local addonName = ...
 POKER_ADDON = addonName or "BountyHoldem"
@@ -291,3 +294,24 @@ recv:SetScript("OnEvent", function(_, event, prefix, msg, channel, sender)
         RunHandlers(msg, sender)
     end
 end)
+
+-- == Old copy check =======================================================
+-- An older install in AddOns\Poker runs alongside and doubles every kill, so
+-- switch it off for the next load and say how to finish
+do
+    local check = CreateFrame("Frame")
+    check:RegisterEvent("PLAYER_LOGIN")
+    check:SetScript("OnEvent", function()
+        if POKER_OWNER == "Poker" then return end
+        local isLoaded = (C_AddOns and C_AddOns.IsAddOnLoaded) or IsAddOnLoaded
+        local disable = (C_AddOns and C_AddOns.DisableAddOn) or DisableAddOn
+        if not isLoaded or not disable then return end
+        local ok, loaded = pcall(isLoaded, "Poker")
+        if not ok or not loaded then return end
+        pcall(disable, "Poker")
+        C_Timer.After(3, function()
+            print("|cff00cccc[Poker]|r An old copy in AddOns\\Poker was also running, so every kill counted twice. "
+                .. "It is now switched off: type |cffffe6b3/reload|r, then delete that folder.")
+        end)
+    end)
+end

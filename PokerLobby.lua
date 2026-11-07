@@ -1,14 +1,16 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.0 by Lee
+-- Bounty Hold'em v1.1.1 by Lee
 -- PokerLobby.lua: restyled welcome window
 -- =========================================================================
+-- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
+if POKER_OWNER and POKER_OWNER ~= (...) then return end
 -- Bottom action bar with a large Join button and status line, chips on the
 -- left, Host on the right and a small Settings gear. With media\lobby_bg.tga
 -- installed, the art fills the window and the title uses the Warcraft font
 
 local MEDIA = POKER_MEDIA
 local NEW_ART = true -- Set true once media\lobby_bg.tga (1280 x 672, no text) is in place
-local VERSION = "v1.1.0"
+local VERSION = "v1.1.1"
 
 local function Style()
     local role = _G["PokerJoinTableFrame"]

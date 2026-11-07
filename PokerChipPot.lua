@@ -1,7 +1,9 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.0 by Lee
+-- Bounty Hold'em v1.1.1 by Lee
 -- PokerChipPot.lua: on-screen chip pot that fills as you earn chips
 -- =========================================================================
+-- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
+if POKER_OWNER and POKER_OWNER ~= (...) then return end
 -- Small movable pot showing your balance; it bounces and a green +N drops in
 -- on every kill payout
 --   /poker pot        toggle the pot

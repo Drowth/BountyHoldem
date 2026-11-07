@@ -1,7 +1,9 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.0 by Lee
+-- Bounty Hold'em v1.1.1 by Lee
 -- PokerHandEval.lua: hand evaluation, deck helpers and CRC32
 -- =========================================================================
+-- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
+if POKER_OWNER and POKER_OWNER ~= (...) then return end
 -- Texas Hold'em scoring, deck utilities and CRC32 checks
 -- Plain Lua 5.1 with no WoW API calls, so it can be tested outside the game
 

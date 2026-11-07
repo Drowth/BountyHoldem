@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1 (2026-11-07)
+
+- Fixed kills paying twice and two chip pots showing when an old copy in AddOns\Poker was still installed. The old copy is now switched off automatically; /reload and delete that folder.
+- Only one installed copy of the addon ever runs
+
 ## 1.1.0 (2026-11-06)
 
 First public release as Bounty Hold'em.
