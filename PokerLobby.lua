@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.1 by Lee
+-- Bounty Hold'em v1.1.2 by Lee
 -- PokerLobby.lua: restyled welcome window
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -10,11 +10,11 @@ if POKER_OWNER and POKER_OWNER ~= (...) then return end
 
 local MEDIA = POKER_MEDIA
 local NEW_ART = true -- Set true once media\lobby_bg.tga (1280 x 672, no text) is in place
-local VERSION = "v1.1.1"
+local VERSION = "v1.1.2"
 
 local function Style()
-    local role = _G["PokerJoinTableFrame"]
     local ui = PokerUI
+    local role = ui and ui.RoleFrame -- This copy's own lobby, not whichever frame holds the global name
     if not role or not ui or role.pokerLobbyStyled then return end
     role.pokerLobbyStyled = true
     local inset = role.Inset or role
@@ -117,8 +117,8 @@ local function Style()
         icon:SetPoint("BOTTOMRIGHT", -5, 5)
         settings:HookScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-            GameTooltip:SetText("Settings", 1, 1, 1)
-            GameTooltip:AddLine("Window size and volume", 0.8, 0.8, 0.8)
+            GameTooltip:SetText("Volume", 1, 1, 1)
+            GameTooltip:AddLine("Window size is the bar on the right edge", 0.8, 0.8, 0.8)
             GameTooltip:Show()
         end)
         settings:HookScript("OnLeave", function() GameTooltip:Hide() end)
