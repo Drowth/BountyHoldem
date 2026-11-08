@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.1 (2026-11-08)
+
+- Welcome window on first load explains how to play, step by step
+- A ? button in the lobby opens it again any time
+
 ## 1.2.0 (2026-11-08)
 
 - Leaderboard button in the lobby, next to Host Table
