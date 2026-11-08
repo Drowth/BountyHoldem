@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.7 (2026-11-08)
+
+- Daily bonus: open poker once every 24 hours for 100 free chips (separate from the kill cap)
+
 ## 1.1.6 (2026-11-08)
 
 - Every check, call, raise, fold and all-in now pops up in large letters on that player's seat, so bot moves are easy to follow
