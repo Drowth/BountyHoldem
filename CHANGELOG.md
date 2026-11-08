@@ -5,6 +5,7 @@
 - Fixed multiplayer on servers that give characters a surname (sender shows as "Name Surname"). The host now recognises players, so seats get their chip stack, hands deal and players can act.
 - Hole cards now reach players on those servers too
 - The host no longer gets a "want to play?" prompt for their own table
+- No more chat line for every kill; the chip pot already shows each gain. Type /poker killchat to turn it back on.
 
 ## 1.1.3 (2026-11-07)
 

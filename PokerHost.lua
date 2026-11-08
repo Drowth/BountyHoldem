@@ -19,6 +19,7 @@ if POKER_OWNER and POKER_OWNER ~= (...) then return end
 -- Commands for everyone:
 --   /poker chips           print your chip balance
 --   /poker pot             toggle the on-screen chip pot
+--   /poker killchat        toggle the "+N chips from a kill" chat line (off by default)
 --   /poker camp on|off     open poker when sitting at a campfire
 
 local N = PokerNet
@@ -987,6 +988,12 @@ HandleHostCommand = function(cmd, rest)
         return true
     end
     if cmd == "chips" then PokerEconomy.PrintStatus() return true end
+    if cmd == "killchat" then
+        PokerChipsDB = PokerChipsDB or {}
+        PokerChipsDB.killChat = not PokerChipsDB.killChat
+        Say("Chip messages for kills are now " .. (PokerChipsDB.killChat and "on." or "off."))
+        return true
+    end
     if cmd == "pot" then if PokerChipPot_Toggle then PokerChipPot_Toggle() end return true end
     if cmd == "camp" then
         if rest == "on" or rest == "off" then

@@ -95,8 +95,9 @@ local function FlushSummary()
         return
     end
     local extra = summary.best and (" incl. " .. summary.best) or ""
-    print(("|cff00cccc[Poker]|r |cff90ee90+%d chips|r from %d kill%s%s. Balance: |cffffff00%d|r")
-        :format(summary.chips, summary.kills, summary.kills == 1 and "" or "s", extra, Econ.Balance()))
+    -- The chip pot already shows each gain, so the chat line is opt-in (/poker killchat)
+    if db and db.killChat then print(("|cff00cccc[Poker]|r |cff90ee90+%d chips|r from %d kill%s%s. Balance: |cffffff00%d|r")
+        :format(summary.chips, summary.kills, summary.kills == 1 and "" or "s", extra, Econ.Balance())) end
     if summary.capped then
         print("|cff00cccc[Poker]|r Daily chip cap reached. Kills pay again tomorrow.")
     end
