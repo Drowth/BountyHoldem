@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.4 by Lee
+-- Bounty Hold'em v1.1.5 by Lee
 -- PokerLobby.lua: restyled welcome window
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -10,7 +10,7 @@ if POKER_OWNER and POKER_OWNER ~= (...) then return end
 
 local MEDIA = POKER_MEDIA
 local NEW_ART = true -- Set true once media\lobby_bg.tga (1280 x 672, no text) is in place
-local VERSION = "v1.1.4"
+local VERSION = "v1.1.5"
 
 local function Style()
     local ui = PokerUI
