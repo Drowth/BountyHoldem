@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.5 by Lee
+-- Bounty Hold'em v1.1.6 by Lee
 -- PokerHost.lua: host mode, one client deals for the group
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -35,6 +35,8 @@ H.bb          = 10
 H.timer       = 30
 H.grace       = 4     -- Grace seconds before the host auto-folds a silent player
 H.handGap     = 7     -- Pause between hands, in seconds
+H.settle      = 5     -- Seconds after a hand before Deal Hand unlocks
+H.readyAt     = 0
 H.seats       = {}    -- Per seat: { name, full, stack, ready }
 H.dealerSeat  = nil
 H.hand        = nil
@@ -422,6 +424,7 @@ end
 EndHand = function(h)
     CancelTurnTimer(h)
     H.hand = nil
+    H.readyAt = GetTime() + H.settle -- Let the pot and showdown animations finish first
     -- Busted players stand once the pot animation has finished
     After(4, function()
         if H.hand then return end
@@ -441,7 +444,7 @@ function H.StartHand()
     if H.hand then return end
     local eligible = SeatsWhere(function(s) return H.seats[s].ready and H.seats[s].stack > 0 end)
     if #eligible < 2 then
-        if H.autoDeal then Say("Waiting for at least two players with chips.") end
+        Say("Waiting for at least two seated players with chips.")
         return
     end
     -- Seated players without a buy-in would break the clients' deal order
@@ -549,6 +552,7 @@ function H.VoidHand()
     for _, s in ipairs(h.order) do SendBankroll(s) end
     Out("UPDATE_POT:0")
     H.hand = nil
+    H.readyAt = GetTime() + 2
     if H.autoDeal then ScheduleNextHand() end
 end
 
@@ -782,8 +786,22 @@ local function AddSeatBotButtons()
         if elapsed < 0.4 then return end
         elapsed = 0
         if H.active then
-            deal:SetText(H.hand and "In play..." or "Deal Hand")
-            deal:SetEnabled(not H.hand)
+            -- One clear state at a time, so Deal Hand only lights up when a hand can start
+            local wait = (H.readyAt or 0) - GetTime()
+            local ready = #SeatsWhere(function(s) return H.seats[s].ready and H.seats[s].stack > 0 end)
+            if H.hand then
+                deal:SetText("In play...")
+                deal:SetEnabled(false)
+            elseif wait > 0 then
+                deal:SetText(("Next hand %d"):format(math.ceil(wait)))
+                deal:SetEnabled(false)
+            elseif ready < 2 then
+                deal:SetText("Need 2 players")
+                deal:SetEnabled(false)
+            else
+                deal:SetText("Deal Hand")
+                deal:SetEnabled(true)
+            end
             deal:Show()
             auto:SetChecked(H.autoDeal)
             auto:Show()
