@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.2 by Lee
+-- Bounty Hold'em v1.1.4 by Lee
 -- PokerNet.lua: networking layer for every client and the host
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -16,7 +16,8 @@ POKER_MEDIA = "Interface\\AddOns\\" .. POKER_ADDON .. "\\media\\"
 --     messages, then roughly 1 per second), so nothing is silently dropped
 --   * Batching: the host packs several table commands into one PREFIX_BATCH
 --     message; clients unpack and pass each to the poker.lua handlers
---   * Hole cards come by private addon whisper on PREFIX_HOLE, not chat whispers
+--   * Hole cards go to the group on PREFIX_HOLE tagged with the player's name;
+--     only that player's client shows them (whisper targets proved unreliable)
 --   * DEAL_ANIM:n runs the deal animation locally rather than via /roll
 
 PokerNet = PokerNet or {}
@@ -32,9 +33,13 @@ C_ChatInfo.RegisterAddonMessagePrefix(N.PREFIX)
 C_ChatInfo.RegisterAddonMessagePrefix(N.PREFIX_BATCH)
 C_ChatInfo.RegisterAddonMessagePrefix(N.PREFIX_HOLE)
 
+-- Character name without realm. Some servers send the addon-message sender as
+-- "Name Surname" while UnitName gives "Name", so keep only the first word too
 function N.ShortName(name)
-    if not name then return nil end
-    return name:match("^([^-]+)") or name
+    if type(name) ~= "string" then return nil end
+    if issecretvalue and issecretvalue(name) then return nil end
+    name = name:match("^([^-]+)") or name
+    return name:match("^(%S+)") or name
 end
 
 function N.MyName()
@@ -189,9 +194,9 @@ function N.Broadcast(cmd)
     end
 end
 
--- Hole cards for one player; fullName is "Name-Realm" or "Name"
-function N.SendHole(fullName, c1, c2)
-    N.Queue(N.PREFIX_HOLE, "HOLE:" .. c1 .. ":" .. c2, "WHISPER", fullName)
+-- Hole cards for one player, sent to the group and shown only by that player
+function N.SendHole(name, c1, c2)
+    N.Queue(N.PREFIX_HOLE, "HOLE:" .. N.ShortName(name) .. ":" .. c1 .. ":" .. c2)
 end
 
 -- == Client receive: unpack batches into poker.lua handlers ===============
@@ -282,8 +287,8 @@ recv:SetScript("OnEvent", function(_, event, prefix, msg, channel, sender)
             end
         end
     elseif prefix == N.PREFIX_HOLE then
-        local c1, c2 = msg:match("^HOLE:([^:]+):([^:]+)$")
-        if c1 and c2 then
+        local who, c1, c2 = msg:match("^HOLE:([^:]+):([^:]+):([^:]+)$")
+        if who and N.ShortName(who) == N.MyName() and c1 and c2 then
             if GetTime() < dealAnimUntil then
                 pendingHole = { c1, c2, sender } -- Reveal once our cards have landed
             else

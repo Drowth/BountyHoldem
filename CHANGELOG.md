@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.4 (2026-11-08)
+
+- Fixed multiplayer on servers that give characters a surname (sender shows as "Name Surname"). The host now recognises players, so seats get their chip stack, hands deal and players can act.
+- Hole cards now reach players on those servers too
+- The host no longer gets a "want to play?" prompt for their own table
+- No more chat line for every kill; the chip pot already shows each gain. Type /poker killchat to turn it back on.
+
+## 1.1.3 (2026-11-07)
+
+- Closing the table window while hosting now closes your table. Before, bots and auto-deal kept playing on a table nobody could see, and hosting again picked up that old table.
+
 ## 1.1.2 (2026-11-07)
 
 - Window size is now a small drag bar on the right edge of the lobby and the table. Drag up for bigger, down for smaller. The size is remembered per character.

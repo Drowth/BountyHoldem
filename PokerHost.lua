@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.2 by Lee
+-- Bounty Hold'em v1.1.4 by Lee
 -- PokerHost.lua: host mode, one client deals for the group
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -19,6 +19,7 @@ if POKER_OWNER and POKER_OWNER ~= (...) then return end
 -- Commands for everyone:
 --   /poker chips           print your chip balance
 --   /poker pot             toggle the on-screen chip pot
+--   /poker killchat        toggle the "+N chips from a kill" chat line (off by default)
 --   /poker camp on|off     open poker when sitting at a campfire
 
 local N = PokerNet
@@ -529,7 +530,7 @@ function H.StartHand()
         -- Send hole cards after the deal animation lands, so nothing clears them
         for _, s in ipairs(eligible) do
             local p = h.players[s]
-            if H.seats[s] and not H.seats[s].bot then N.SendHole(H.seats[s].full, p.hole[1], p.hole[2]) end
+            if H.seats[s] and not H.seats[s].bot then N.SendHole(H.seats[s].name, p.hole[1], p.hole[2]) end
         end
         -- Preflop order: heads-up the button (small blind) acts first, else left of the big blind
         local first = NextToAct(h, h.bbSeat)
@@ -724,9 +725,19 @@ end
 local HandleHostCommand -- Forward declaration
 
 local function AddSeatBotButtons()
-    local tbl = _G["PokerTableFrame"]
+    local tbl = (PokerUI and PokerUI.TableFrame) or _G["PokerTableFrame"]
     if not tbl or not seatMarkers or H.seatBotButtons then return end
     H.seatBotButtons = {}
+
+    -- Closing the table window as host closes the table too. Otherwise bots and
+    -- auto-deal keep running on a table nobody can see, and the next "host"
+    -- picks up that old table instead of a fresh one
+    tbl:HookScript("OnHide", function()
+        if H.active then
+            Say("You closed the table window, so your table is closed.")
+            H.Close()
+        end
+    end)
     for s = 1, 9 do
         local marker = seatMarkers[s]
         if marker and marker.button then
@@ -977,6 +988,12 @@ HandleHostCommand = function(cmd, rest)
         return true
     end
     if cmd == "chips" then PokerEconomy.PrintStatus() return true end
+    if cmd == "killchat" then
+        PokerChipsDB = PokerChipsDB or {}
+        PokerChipsDB.killChat = not PokerChipsDB.killChat
+        Say("Chip messages for kills are now " .. (PokerChipsDB.killChat and "on." or "off."))
+        return true
+    end
     if cmd == "pot" then if PokerChipPot_Toggle then PokerChipPot_Toggle() end return true end
     if cmd == "camp" then
         if rest == "on" or rest == "off" then
@@ -1045,7 +1062,7 @@ end
 
 -- "Host Table" button on the join window, so /poker host is optional
 local function AddHostButton()
-    local role = _G["PokerJoinTableFrame"]
+    local role = (PokerUI and PokerUI.RoleFrame) or _G["PokerJoinTableFrame"]
     if not role or H.hostBtn then return end
     local btn = CreateFrame("Button", nil, role, "GameMenuButtonTemplate")
     btn:SetSize(120, 28)
