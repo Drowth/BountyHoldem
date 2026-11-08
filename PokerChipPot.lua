@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.8 by Lee
+-- Bounty Hold'em v1.1.9 by Lee
 -- PokerChipPot.lua: on-screen chip pot that fills as you earn chips
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -121,7 +121,7 @@ local function BuildPot()
     pot:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_TOP")
         GameTooltip:SetText("Poker chips", 1, 1, 1)
-        local db = PokerChipsDB or {}
+        local db = PokerBankDB or {}
         GameTooltip:AddLine(("Earned today: %d / %d"):format(db.earnedToday or 0, Econ.DAILY_CAP), 0.8, 0.8, 0.8)
         GameTooltip:AddLine("Kill mobs to earn chips.", 0.6, 0.6, 0.6)
         GameTooltip:AddLine("Left-click: open poker", 0.6, 0.6, 0.6)
@@ -216,9 +216,14 @@ local function Note(name, chips, mine, played)
     if board and board:IsShown() then RefreshBoard() end
 end
 
+-- One line for you: the character you are on now carries the shared bank
 NoteSelf = function(n)
     local me = N and N.MyName and N.MyName()
-    if me then Note(me, n, true) end
+    if not me then return end
+    for name, e in pairs(LBData()) do
+        if name ~= me and type(e) == "table" and e.mine then LBData()[name] = nil end
+    end
+    Note(me, n, true)
 end
 
 local function Prune()
@@ -295,7 +300,7 @@ local function BuildBoard()
 
     local foot = b:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
     foot:SetPoint("BOTTOM", 0, 10)
-    foot:SetText("Your characters and players you've played with")
+    foot:SetText("You and players you've played with")
     b.foot = foot
 end
 

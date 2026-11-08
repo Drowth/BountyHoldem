@@ -1,10 +1,11 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.8 by Lee
+-- Bounty Hold'em v1.1.9 by Lee
 -- PokerEconomy.lua: chip earning, saved balance and table sync
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
 if POKER_OWNER and POKER_OWNER ~= (...) then return end
--- Kills earn chips, saved per character in PokerChipsDB. Your full balance
+-- Kills earn chips into one bank for the whole account (PokerBankDB), shared
+-- by every character, with one daily cap and one daily bonus. Your full balance
 -- is your stack when seated, and the host's BANKROLL_SET messages keep the
 -- saved balance in step during play
 
@@ -14,7 +15,7 @@ PokerEconomy = PokerEconomy or {}
 local Econ = PokerEconomy
 
 -- == Tuning ===============================================================
-Econ.STARTER_CHIPS = 200   -- One-time grant on a character's first load
+Econ.STARTER_CHIPS = 200   -- One-time grant when the account bank is first made
 Econ.DAILY_CAP     = 1000  -- Daily cap on chips earned from kills
 Econ.REWARDS = {
     normal    = 1,
@@ -30,16 +31,54 @@ Econ.SUMMARY_DELAY = 4 -- Seconds to gather kill payouts into one chat line
 local db
 local function Today() return date("%Y-%m-%d") end
 
+-- Characters from before the bank bring their old balance once. The bank only
+-- rises to the richest character seen, so alts do not add up
+local function MoveIntoBank(char)
+    char.banked = true
+    if not char.initialised then return end -- New character: nothing to bring
+    local old = (tonumber(char.chips) or 0) + (tonumber(char.pending) or 0)
+    local peak = tonumber(db.peak) or Econ.STARTER_CHIPS
+    if old > peak then
+        db.chips = db.chips + (old - peak)
+        db.peak = old
+    end
+    db.totalEarned = math.max(db.totalEarned or 0, tonumber(char.totalEarned) or 0)
+    if char.day == Today() then
+        db.day = Today()
+        db.earnedToday = math.max(db.earnedToday or 0, tonumber(char.earnedToday) or 0)
+    end
+    db.lastDaily = math.max(tonumber(db.lastDaily) or 0, tonumber(char.lastDaily) or 0)
+    if type(char.badges) == "table" then
+        db.badges = db.badges or {}
+        local have = {}
+        for _, k in ipairs(db.badges) do have[k] = true end
+        for _, k in ipairs(char.badges) do
+            if not have[k] then db.badges[#db.badges + 1] = k end
+        end
+        table.sort(db.badges)
+    end
+    db.season = db.season or char.season
+    char.chips, char.pending, char.badges, char.season = nil, nil, nil, nil
+    print(("|cff00cccc[Poker]|r Chips are now shared by all your characters. Bank: |cffffff00%d|r."):format(db.chips))
+end
+
 local function EnsureDB()
     PokerChipsDB = PokerChipsDB or {}
-    db = PokerChipsDB
+    PokerBankDB = PokerBankDB or {}
+    db = PokerBankDB
     if not db.initialised then
-        db.chips = Econ.STARTER_CHIPS
+        -- Start at the richest of your characters the leaderboard has seen
+        local best = Econ.STARTER_CHIPS
+        for _, e in pairs(PokerLeaderDB or {}) do
+            if type(e) == "table" and e.mine then best = math.max(best, tonumber(e.chips) or 0) end
+        end
+        db.chips = best
         db.pending = 0
         db.totalEarned = 0
+        db.peak = best
         db.initialised = true
-        db.starterGiven = true
     end
+    if not PokerChipsDB.banked then MoveIntoBank(PokerChipsDB) end
     db.chips = db.chips or 0
     db.pending = db.pending or 0
     if db.day ~= Today() then
@@ -96,7 +135,7 @@ local function FlushSummary()
     end
     local extra = summary.best and (" incl. " .. summary.best) or ""
     -- The chip pot already shows each gain, so the chat line is opt-in (/poker killchat)
-    if db and db.killChat then print(("|cff00cccc[Poker]|r |cff90ee90+%d chips|r from %d kill%s%s. Balance: |cffffff00%d|r")
+    if PokerChipsDB and PokerChipsDB.killChat then print(("|cff00cccc[Poker]|r |cff90ee90+%d chips|r from %d kill%s%s. Balance: |cffffff00%d|r")
         :format(summary.chips, summary.kills, summary.kills == 1 and "" or "s", extra, Econ.Balance())) end
     if summary.capped then
         print("|cff00cccc[Poker]|r Daily chip cap reached. Kills pay again tomorrow.")

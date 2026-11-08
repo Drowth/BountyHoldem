@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.8 by Lee
+-- Bounty Hold'em v1.1.9 by Lee
 -- PokerHost.lua: host mode, one client deals for the group
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle

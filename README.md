@@ -6,7 +6,7 @@ Every mob you kill drops chips into your pot. Get your group together, open a ta
 
 ## How to play
 
-1. **Earn chips.** Just play the game. Normal mobs pay 1 chip, elites 5, rares 25, rare elites 30 and bosses 100. Grey mobs pay nothing. You can earn up to 1,000 a day, and new characters start with 200.
+1. **Earn chips.** Just play the game. Normal mobs pay 1 chip, elites 5, rares 25, rare elites 30 and bosses 100. Grey mobs pay nothing. Your chips are shared by every character on your account. You can earn up to 1,000 a day, and you start with 200.
 2. **Get a group.** One of you types `/poker host`. Everyone else in the party or raid gets a pop-up asking if they want to play.
 3. **Sit down.** Click Play, then click an empty seat. Your chips come with you.
 4. **Deal.** The host presses Deal Hand (or ticks Auto-deal) and you play normal Texas Hold'em: blinds, check, call, raise, fold, best five cards wins.
@@ -15,7 +15,7 @@ Short on players? The host can fill empty seats with bots.
 
 ## The chip pot
 
-The little stack of chips on your screen is your balance. It bounces every time a kill pays out. Open poker once a day for a free 100-chip bonus.
+The little stack of chips on your screen is your balance. It bounces every time a kill pays out. Open poker once a day for a free 100-chip bonus (once per account, not per character).
 
 ## Seasons
 

@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.8 by Lee
+-- Bounty Hold'em v1.1.9 by Lee
 -- PokerCamp.lua: sitting at a campfire opens the poker window
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
