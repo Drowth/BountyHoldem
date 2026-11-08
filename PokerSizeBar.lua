@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.5 by Lee
+-- Bounty Hold'em v1.1.6 by Lee
 -- PokerSizeBar.lua: small drag bar on the window edge that sets its size
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle

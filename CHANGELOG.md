@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.6 (2026-11-08)
+
+- Every check, call, raise, fold and all-in now pops up in large letters on that player's seat, so bot moves are easy to follow
+- Deal Hand only lights up when a hand can start. Otherwise it says why: "In play...", a countdown to the next hand, or "Need 2 players"
+- Until you sit down, empty chairs pulse with SIT and the felt says "Click an empty chair to sit down"
+
 ## 1.1.5 (2026-11-08)
 
 - New check sound: a quick double knock
