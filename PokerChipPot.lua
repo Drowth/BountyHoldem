@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.9 by Lee
+-- Bounty Hold'em v1.2.0 by Lee
 -- PokerChipPot.lua: on-screen chip pot that fills as you earn chips
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -337,12 +337,16 @@ RefreshBoard = function()
     end
 end
 
-function PokerChipPot_ToggleBoard()
+-- anchor: open above that frame (the lobby button) instead of beside the pot
+function PokerChipPot_ToggleBoard(anchor)
     if not board then BuildBoard() end
     if board:IsShown() then board:Hide() return end
     board:ClearAllPoints()
+    board:SetFrameStrata(anchor and "FULLSCREEN_DIALOG" or "DIALOG")
+    if anchor then
+        board:SetPoint("BOTTOM", anchor, "TOP", 0, 8)
     -- Open on whichever side of the pot has more room
-    if pot and (pot:GetCenter() or 0) > UIParent:GetWidth() / 2 then
+    elseif pot and (pot:GetCenter() or 0) > UIParent:GetWidth() / 2 then
         board:SetPoint("RIGHT", pot, "LEFT", -8, 0)
     else
         board:SetPoint("LEFT", pot, "RIGHT", 8, 0)

@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.9 by Lee
+-- Bounty Hold'em v1.2.0 by Lee
 -- PokerLobby.lua: restyled welcome window
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -10,7 +10,7 @@ if POKER_OWNER and POKER_OWNER ~= (...) then return end
 
 local MEDIA = POKER_MEDIA
 local NEW_ART = true -- Set true once media\lobby_bg.tga (1280 x 672, no text) is in place
-local VERSION = "v1.1.9"
+local VERSION = "v1.2.0"
 
 local function Style()
     local ui = PokerUI
@@ -90,6 +90,20 @@ local function Style()
         host:SetFrameLevel(bar:GetFrameLevel() + 2)
     end
     PlaceHost()
+
+    -- Leaderboard button, left of Host
+    local lb = CreateFrame("Button", nil, bar, "GameMenuButtonTemplate")
+    lb:SetSize(130, 30)
+    lb:SetPoint("RIGHT", bar, "RIGHT", -156, 4)
+    lb:SetFrameLevel(bar:GetFrameLevel() + 2)
+    lb:SetText("Leaderboard")
+    lb:SetScript("OnClick", function(self)
+        if PokerChipPot_ToggleBoard then PokerChipPot_ToggleBoard(self) end
+    end)
+    role:HookScript("OnHide", function()
+        local b = _G["PokerLeaderboardFrame"]
+        if b and b:GetFrameStrata() == "FULLSCREEN_DIALOG" then b:Hide() end
+    end)
 
     -- Chip balance, left side
     local Econ = PokerEconomy

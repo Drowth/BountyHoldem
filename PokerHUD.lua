@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.9 by Lee
+-- Bounty Hold'em v1.2.0 by Lee
 -- PokerHUD.lua: large board, hand panel, winner banner and chip popups
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
