@@ -22,7 +22,7 @@ The little stack of chips on your screen is your balance. It bounces every time 
 Each month is a season. On the 1st, whoever has the most chips on your leaderboard wins it and earns a badge under their name on the player frame. Badges stack, one for every season you win. Then everyone's chips reset to 200 and the race starts again.
 
 - **Left-click** opens the table.
-- **Right-click** shows a leaderboard of your characters and anyone you've played with.
+- **Right-click** shows the leaderboard of you and anyone you've played with. The lobby has a Leaderboard button too.
 - **Drag** to move it.
 
 ## Commands

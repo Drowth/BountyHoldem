@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0 (2026-11-08)
+
+- Leaderboard button in the lobby, next to Host Table
+
 ## 1.1.9 (2026-11-08)
 
 - Chips are now shared by every character on your account, so you can play with your full bank on any alt
