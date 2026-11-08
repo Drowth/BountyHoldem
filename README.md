@@ -15,7 +15,7 @@ Short on players? The host can fill empty seats with bots.
 
 ## The chip pot
 
-The little stack of chips on your screen is your balance. It bounces every time a kill pays out.
+The little stack of chips on your screen is your balance. It bounces every time a kill pays out. Open poker once a day for a free 100-chip bonus.
 
 - **Left-click** opens the table.
 - **Right-click** shows a leaderboard of your characters and anyone you've played with.

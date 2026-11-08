@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.6 by Lee
+-- Bounty Hold'em v1.1.7 by Lee
 -- PokerEconomy.lua: chip earning, saved balance and table sync
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -138,6 +138,31 @@ local function Award(amount, label)
     end
     RefreshDisplay()
     if Econ.OnEarn then Econ.OnEarn(amount, label) end
+end
+
+-- == Daily bonus =========================================================
+-- Opening poker pays a bonus once every 24 hours (real time, per character).
+-- It sits outside the kill cap
+Econ.DAILY_BONUS = 100
+Econ.DAILY_COOLDOWN = 24 * 60 * 60
+
+function Econ.ClaimDaily()
+    EnsureDB()
+    local now = time()
+    local last = tonumber(db.lastDaily) or 0
+    if now - last < Econ.DAILY_COOLDOWN then return false end
+    db.lastDaily = now
+    local amount = Econ.DAILY_BONUS
+    if Seated() then
+        db.pending = (db.pending or 0) + amount
+    else
+        db.chips = (db.chips or 0) + amount
+    end
+    RefreshDisplay()
+    if Econ.OnEarn then Econ.OnEarn(amount, "daily") end
+    print(("|cff00cccc[Poker]|r Daily bonus: |cff90ee90+%d chips|r. Come back in 24 hours for the next one.")
+        :format(amount))
+    return true
 end
 
 -- Highest grey mob level for the player's level: the game's value when the
@@ -371,7 +396,11 @@ f:SetScript("OnEvent", function(_, event, ...)
     if event == "PLAYER_LOGIN" then
         EnsureDB()
         if not Seated() then FoldPending() end
-        local role = _G["PokerJoinTableFrame"]
+        local role = (PokerUI and PokerUI.RoleFrame) or _G["PokerJoinTableFrame"]
+        local tbl = (PokerUI and PokerUI.TableFrame) or _G["PokerTableFrame"]
+        -- Opening the lobby or the table claims the daily bonus when it is due
+        if role then role:HookScript("OnShow", function() pcall(Econ.ClaimDaily) end) end
+        if tbl then tbl:HookScript("OnShow", function() pcall(Econ.ClaimDaily) end) end
         if role then
             balanceText = role:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
             balanceText:SetPoint("BOTTOMLEFT", role, "BOTTOMLEFT", 16, 12)

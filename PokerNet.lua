@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.6 by Lee
+-- Bounty Hold'em v1.1.7 by Lee
 -- PokerNet.lua: networking layer for every client and the host
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
