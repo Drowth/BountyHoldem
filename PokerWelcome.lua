@@ -20,7 +20,7 @@ local STEPS = {
     { "step_season", "Win the season", "Click Leaderboard in the lobby to see who's ahead. On the 1st of each month the top player wins a badge for their name and everyone starts again on 200 chips." },
 }
 
-local W, ICON, TEXT_W = 640, 40, 520
+local W, ICON, TEXT_W = 760, 50, 630
 
 local win
 
@@ -39,7 +39,7 @@ local function ArtButton(parent, label, w, h)
     hl:SetBlendMode("ADD")
     hl:SetAlpha(0.35)
     local fs = b:CreateFontString(nil, "OVERLAY")
-    fs:SetFont("Fonts\\FRIZQT__.TTF", 15, "OUTLINE")
+    fs:SetFont("Fonts\\FRIZQT__.TTF", 18, "OUTLINE")
     fs:SetTextColor(1, 0.9, 0.6)
     fs:SetPoint("CENTER", 0, 1)
     fs:SetText(label)
@@ -82,7 +82,7 @@ local function Build()
 
     -- Wooden sign hanging over the top edge, with the title on its face
     local sign = CreateFrame("Frame", nil, f)
-    sign:SetSize(560, 178)
+    sign:SetSize(660, 210)
     sign:SetPoint("CENTER", f, "TOP", 0, -10)
     sign:SetFrameLevel(f:GetFrameLevel() + 5)
     local board = sign:CreateTexture(nil, "ARTWORK")
@@ -90,7 +90,7 @@ local function Build()
     board:SetTexCoord(0, 1, 0.18, 0.82)
     board:SetAllPoints()
     local title = sign:CreateFontString(nil, "OVERLAY")
-    title:SetFont("Fonts\\MORPHEUS.TTF", 27, "THICKOUTLINE")
+    title:SetFont("Fonts\\MORPHEUS.TTF", 34, "THICKOUTLINE")
     title:SetPoint("CENTER", 0, -6)
     title:SetTextColor(1, 0.82, 0.25)
     title:SetShadowOffset(2, -2)
@@ -98,20 +98,20 @@ local function Build()
     title:SetText("Welcome to Bounty Hold'em")
 
     local sub = f:CreateFontString(nil, "OVERLAY")
-    sub:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
-    sub:SetPoint("TOP", f, "TOP", 0, -104)
+    sub:SetFont("Fonts\\FRIZQT__.TTF", 15, "OUTLINE")
+    sub:SetPoint("TOP", f, "TOP", 0, -120)
     sub:SetTextColor(0.9, 0.85, 0.7)
     sub:SetText("Texas Hold'em for your party, paid for by the mobs you kill.")
 
     -- Steps: medallion icon, then the text beside it
-    local y = -128
+    local y = -152
     for _, s in ipairs(STEPS) do
         local icon = f:CreateTexture(nil, "ARTWORK")
         icon:SetTexture(MEDIA .. s[1])
         icon:SetSize(ICON, ICON)
-        icon:SetPoint("TOPLEFT", f, "TOPLEFT", 30, y)
+        icon:SetPoint("TOPLEFT", f, "TOPLEFT", 32, y)
         local body = f:CreateFontString(nil, "OVERLAY")
-        body:SetFont("Fonts\\FRIZQT__.TTF", 12, "")
+        body:SetFont("Fonts\\FRIZQT__.TTF", 15, "")
         body:SetShadowOffset(1, -1)
         body:SetTextColor(0.94, 0.92, 0.88)
         body:SetWidth(TEXT_W)
@@ -119,27 +119,27 @@ local function Build()
         body:SetSpacing(2)
         body:SetText(GOLD .. s[2] .. "|r   " .. s[3])
         local h = body:GetStringHeight() or 0
-        if h <= 0 or h > 120 then h = 30 end
-        body:SetPoint("LEFT", icon, "RIGHT", 12, 0)
+        if h <= 0 or h > 160 then h = 36 end
+        body:SetPoint("LEFT", icon, "RIGHT", 14, 0)
         if h > ICON then
             body:ClearAllPoints()
-            body:SetPoint("TOPLEFT", icon, "TOPRIGHT", 12, 0)
+            body:SetPoint("TOPLEFT", icon, "TOPRIGHT", 14, 0)
         end
-        y = y - math.max(ICON, h) - 10
+        y = y - math.max(ICON, h) - 12
     end
 
     -- Buttons
-    local play = ArtButton(f, "Let's play", 190, 48)
+    local play = ArtButton(f, "Let's play", 230, 58)
     play:SetPoint("TOPRIGHT", f, "TOP", -8, y - 8)
     play:SetScript("OnClick", function()
         f:Hide()
         local role = PokerUI and PokerUI.RoleFrame
         if not (role and role:IsShown()) and SlashCmdList["POKER"] then SlashCmdList["POKER"]("") end
     end)
-    local close = ArtButton(f, "Close", 190, 48)
+    local close = ArtButton(f, "Close", 230, 58)
     close:SetPoint("TOPLEFT", f, "TOP", 8, y - 8)
     close:SetScript("OnClick", function() f:Hide() end)
-    f:SetHeight(-y + 74)
+    f:SetHeight(-y + 86)
 
     local x = CreateFrame("Button", nil, f, "UIPanelCloseButton")
     x:SetPoint("TOPRIGHT", -6, -6)
