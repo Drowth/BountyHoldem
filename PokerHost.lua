@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.3 by Lee
+-- Bounty Hold'em v1.1.4 by Lee
 -- PokerHost.lua: host mode, one client deals for the group
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -529,7 +529,7 @@ function H.StartHand()
         -- Send hole cards after the deal animation lands, so nothing clears them
         for _, s in ipairs(eligible) do
             local p = h.players[s]
-            if H.seats[s] and not H.seats[s].bot then N.SendHole(H.seats[s].full, p.hole[1], p.hole[2]) end
+            if H.seats[s] and not H.seats[s].bot then N.SendHole(H.seats[s].name, p.hole[1], p.hole[2]) end
         end
         -- Preflop order: heads-up the button (small blind) acts first, else left of the big blind
         local first = NextToAct(h, h.bbSeat)
