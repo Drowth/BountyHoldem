@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.8 (2026-11-08)
+
+- Monthly seasons: on the 1st of every month the season ends and everyone's chips reset to 200
+- Whoever tops your chip leaderboard when the month ends wins a season badge, shown under their name on the player frame. Badges stack, one for every season won
+- The leaderboard now shows your characters and the players you've actually played with, with their season badges and the days left in the season
+- The join prompt when someone in your group starts a table now reads "Do you want to join?" with Yes and No
+
 ## 1.1.7 (2026-11-08)
 
 - Daily bonus: open poker once every 24 hours for 100 free chips (separate from the kill cap)

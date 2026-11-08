@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.7 by Lee
+-- Bounty Hold'em v1.1.8 by Lee
 -- PokerHandEval.lua: hand evaluation, deck helpers and CRC32
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
