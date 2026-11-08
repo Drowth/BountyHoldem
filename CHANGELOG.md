@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.5 (2026-11-08)
+
+- New check sound: a quick double knock
+
 ## 1.1.4 (2026-11-08)
 
 - Fixed multiplayer on servers that give characters a surname (sender shows as "Name Surname"). The host now recognises players, so seats get their chip stack, hands deal and players can act.
