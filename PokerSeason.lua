@@ -1,13 +1,13 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.8 by Lee
+-- Bounty Hold'em v1.1.9 by Lee
 -- PokerSeason.lua: monthly seasons, chip resets and season badges
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
 if POKER_OWNER and POKER_OWNER ~= (...) then return end
 -- A season runs for a calendar month. On the 1st, whoever tops your chip
--- leaderboard (your characters and players you've played with) wins that
--- season; every character goes back to the starter stack and the winner
--- keeps a badge under their name on the player frame. Badges stack forever
+-- leaderboard (you and players you've played with) wins that season; the
+-- account bank goes back to the starter stack and the winner keeps a badge
+-- under their name on the player frame, on every character. Badges stack forever
 
 local N = PokerNet
 local Econ = PokerEconomy
@@ -21,9 +21,8 @@ local ICON_STEP  = 13  -- Badges overlap like a short stack of coins
 local MAX_ICONS  = 10  -- Past this the row shows a count instead
 
 -- == Saved data ===========================================================
--- Account-wide PokerSeasonDB: current season, winner of each past season and
--- badge counts seen from other players. Per character: PokerChipsDB.season
--- and PokerChipsDB.badges (list of season keys won)
+-- PokerSeasonDB: current season, winner of each past season and badge counts
+-- seen from other players. The bank (PokerBankDB) keeps .season and .badges
 local function SDB()
     PokerSeasonDB = PokerSeasonDB or {}
     local d = PokerSeasonDB
@@ -49,9 +48,9 @@ local function SeasonEnd()
 end
 
 local function Badges()
-    if not PokerChipsDB then return {} end
-    PokerChipsDB.badges = PokerChipsDB.badges or {}
-    return PokerChipsDB.badges
+    if not PokerBankDB then return {} end
+    PokerBankDB.badges = PokerBankDB.badges or {}
+    return PokerBankDB.badges
 end
 
 local function IsBot(name)
@@ -139,41 +138,44 @@ end
 
 -- Highest balance on this account's board when the month ended
 local function TopOfBoard()
-    local best, bestChips
+    local best, bestChips, mine
     for name, e in pairs(PokerLeaderDB or {}) do
         local chips = type(e) == "table" and tonumber(e.chips)
         if chips and (e.mine or e.played) and not IsBot(name) then
             if not best or chips > bestChips or (chips == bestChips and name < best) then
-                best, bestChips = name, chips
+                best, bestChips, mine = name, chips, e.mine
             end
         end
     end
-    return best, bestChips
+    return best, bestChips, mine
 end
 
 local function Check()
-    if not PokerChipsDB or Busy() then return end
+    if not PokerBankDB or Busy() then return end
     local now = Key()
     local d = SDB()
-    -- The first character on the account to log in after the 1st closes the season
+    -- Whichever character logs in first after the 1st closes the season
     if d.season and d.season < now then
-        local winner, chips = TopOfBoard()
+        local winner, chips, mine = TopOfBoard()
         if winner then
             d.winners[d.season] = winner
+            -- Any of your characters winning counts for the shared bank
+            d.mineWins = d.mineWins or {}
+            d.mineWins[d.season] = mine and true or nil
             print(("|cff00cccc[Poker]|r The %s season is over. Champion: |cffffd100%s|r with %d chips.")
                 :format(Label(d.season), winner, chips))
         end
         if PokerLeaderDB then wipe(PokerLeaderDB) end
     end
     d.season = now
-    -- Then each character collects any badge and resets on its own login
-    local db = PokerChipsDB
+    -- Then the bank collects any badge and resets
+    local db = PokerBankDB
     if db.season and db.season < now then
         local me, list, won = N.MyName(), Badges(), 0
         local have = {}
         for _, k in ipairs(list) do have[k] = true end
         for k, name in pairs(d.winners) do
-            if name == me and k >= db.season and k < now and not have[k] then
+            if (name == me or (d.mineWins and d.mineWins[k])) and k >= db.season and k < now and not have[k] then
                 list[#list + 1] = k
                 won = won + 1
             end

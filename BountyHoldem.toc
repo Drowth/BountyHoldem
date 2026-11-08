@@ -1,12 +1,12 @@
 ## Interface: 16001
 ## Title: Bounty Hold'em
-## Version: 1.1.8
+## Version: 1.1.9
 ## Author: Lee
 ## Notes: Texas Hold'em with your party. Every mob you kill pays you chips to play with.
 ## Category: Minigames
 ## X-Curse-Project-ID: 1788203
 ## SavedVariablesPerCharacter: PokerChipsDB
-## SavedVariables: PokerLeaderDB, PokerSeasonDB
+## SavedVariables: PokerLeaderDB, PokerSeasonDB, PokerBankDB
 
 PokerNet.lua
 PokerHandEval.lua

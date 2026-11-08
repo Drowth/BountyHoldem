@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.9 (2026-11-08)
+
+- Chips are now shared by every character on your account, so you can play with your full bank on any alt
+- The 1,000 daily kill cap and the 100-chip daily bonus are now once per account, not per character
+- Season badges belong to your account and show under your name on every character
+- Moving over: your bank starts at your richest character's balance (balances aren't added together)
+- The leaderboard shows you as one line, under the character you're playing
+
 ## 1.1.8 (2026-11-08)
 
 - Monthly seasons: on the 1st of every month the season ends and everyone's chips reset to 200
