@@ -16,8 +16,8 @@ PokerSeason = PokerSeason or {}
 local S = PokerSeason
 
 local BADGE = POKER_MEDIA .. "season_badge"
-local ICON_SIZE  = 16
-local ICON_STEP  = 9   -- Badges overlap like a short stack of coins
+local ICON_SIZE  = 18
+local ICON_STEP  = 13  -- Badges overlap like a short stack of coins
 local MAX_ICONS  = 10  -- Past this the row shows a count instead
 
 -- == Saved data ===========================================================
