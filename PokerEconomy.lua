@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.7 by Lee
+-- Bounty Hold'em v1.1.8 by Lee
 -- PokerEconomy.lua: chip earning, saved balance and table sync
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -450,6 +450,16 @@ f:SetScript("OnEvent", function(_, event, ...)
         end
     end
 end)
+
+-- Season reset on the 1st of the month: everyone goes back to the starter stack
+function Econ.SeasonReset()
+    EnsureDB()
+    db.chips = Econ.STARTER_CHIPS
+    db.pending = 0
+    RefreshDisplay()
+    if Econ.OnBalanceChanged then Econ.OnBalanceChanged() end
+end
+Econ.IsSeated = Seated
 
 function Econ.PrintStatus()
     EnsureDB()

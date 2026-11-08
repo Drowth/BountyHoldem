@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.7 by Lee
+-- Bounty Hold'em v1.1.8 by Lee
 -- PokerChipPot.lua: on-screen chip pot that fills as you earn chips
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -202,13 +202,16 @@ local function LBData()
     return PokerLeaderDB
 end
 
-local function Note(name, chips, mine)
+-- played marks someone who sat at a table with you; only they and your own
+-- characters show on the board
+local function Note(name, chips, mine, played)
     chips = tonumber(chips)
     if not name or name == "" or not chips then return end
     local d = LBData()
     local e = d[name] or {}
     e.chips, e.t = chips, time()
     if mine then e.mine = true end
+    if played then e.played = true end
     d[name] = e
     if board and board:IsShown() then RefreshBoard() end
 end
@@ -242,7 +245,7 @@ local function BuildBoard()
     if not ok then b = CreateFrame("Frame", "PokerLeaderboardFrame", UIParent) end
     board = b
     b:Hide()
-    b:SetSize(250, 56 + LB_ROWS * 16)
+    b:SetSize(272, 56 + LB_ROWS * 16)
     b:SetFrameStrata("DIALOG")
     b:SetClampedToScreen(true)
     b:EnableMouse(true)
@@ -261,6 +264,7 @@ local function BuildBoard()
     local title = b:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     title:SetPoint("TOP", 0, -10)
     title:SetText("Chip leaderboard")
+    b.title = title
 
     b.rows = {}
     for i = 1, LB_ROWS do
@@ -272,14 +276,14 @@ local function BuildBoard()
         r.rank:SetJustifyH("RIGHT")
         r.name = b:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
         r.name:SetPoint("TOPLEFT", 38, y)
-        r.name:SetWidth(100)
+        r.name:SetWidth(122)
         r.name:SetJustifyH("LEFT")
         r.chips = b:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-        r.chips:SetPoint("TOPLEFT", 136, y)
+        r.chips:SetPoint("TOPLEFT", 158, y)
         r.chips:SetWidth(52)
         r.chips:SetJustifyH("RIGHT")
         r.age = b:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-        r.age:SetPoint("TOPLEFT", 194, y)
+        r.age:SetPoint("TOPLEFT", 216, y)
         r.age:SetWidth(48)
         r.age:SetJustifyH("LEFT")
         b.rows[i] = r
@@ -291,7 +295,8 @@ local function BuildBoard()
 
     local foot = b:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
     foot:SetPoint("BOTTOM", 0, 10)
-    foot:SetText("Your characters and players seen in your group")
+    foot:SetText("Your characters and players you've played with")
+    b.foot = foot
 end
 
 RefreshBoard = function()
@@ -299,19 +304,24 @@ RefreshBoard = function()
     local me = N and N.MyName and N.MyName()
     local list = {}
     for name, e in pairs(LBData()) do
-        if type(e) == "table" and e.chips then list[#list + 1] = { name = name, e = e } end
+        if type(e) == "table" and e.chips and (e.mine or e.played) then list[#list + 1] = { name = name, e = e } end
     end
     table.sort(list, function(a, b)
         if a.e.chips ~= b.e.chips then return a.e.chips > b.e.chips end
         return a.name < b.name
     end)
     board.empty:SetShown(#list == 0)
+    if PokerSeason and PokerSeason.Title then
+        board.title:SetText(PokerSeason.Title())
+        board.foot:SetText(PokerSeason.Foot())
+    end
     for i, r in ipairs(board.rows) do
         local it = list[i]
         if it then
             local gold = i == 1 and "|cffffd100" or ""
             r.rank:SetText(gold .. i .. ".|r")
-            r.name:SetText((it.name == me and "|cff33ff33" or gold) .. it.name .. "|r")
+            local tag = PokerSeason and PokerSeason.Tag and PokerSeason.Tag(it.name) or ""
+            r.name:SetText((it.name == me and "|cff33ff33" or gold) .. it.name .. "|r" .. tag)
             r.chips:SetText("|cffffff00" .. it.e.chips .. "|r")
             r.age:SetText(Age(it.e, me, it.name))
         end
@@ -359,18 +369,19 @@ end
 
 N.AddCommandHandler(function(cmd)
     local n, a = cmd:match("^WALLET:([^:]+):(%d+)$")
-    if not n then n, a = cmd:match("^BUYIN:([^:]+):(%d+)$") end
     if n then Note(n, a) return end
+    n, a = cmd:match("^BUYIN:([^:]+):(%d+)$")
+    if n then Note(n, a, nil, true) return end
     -- Bankroll lines also cover practice bots, which stay off the board
     n, a = cmd:match("^BANKROLL_SET:([^:]+):(%d+)")
     if n then
-        if not IsBot(n) then Note(n, a) end
+        if not IsBot(n) then Note(n, a, nil, true) end
         return
     end
     if cmd:match("^BANKROLL_BULK:") then
         for pair in cmd:sub(15):gmatch("([^;]+)") do
             local pn, pa = pair:match("^([^=]+)=(%d+)$")
-            if pn and not IsBot(pn) then Note(pn, pa) end
+            if pn and not IsBot(pn) then Note(pn, pa, nil, true) end
         end
     end
 end)

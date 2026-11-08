@@ -17,6 +17,10 @@ Short on players? The host can fill empty seats with bots.
 
 The little stack of chips on your screen is your balance. It bounces every time a kill pays out. Open poker once a day for a free 100-chip bonus.
 
+## Seasons
+
+Each month is a season. On the 1st, whoever has the most chips on your leaderboard wins it and earns a badge under their name on the player frame. Badges stack, one for every season you win. Then everyone's chips reset to 200 and the race starts again.
+
 - **Left-click** opens the table.
 - **Right-click** shows a leaderboard of your characters and anyone you've played with.
 - **Drag** to move it.

@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.1.7 by Lee
+-- Bounty Hold'em v1.1.8 by Lee
 -- poker.lua: table client (lobby, table, seats, betting, animations)
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -232,7 +232,7 @@ end
 do
     local function PrintPokerWelcome_P()
         local teal = "|cff00cccc"
-        print(teal .. "Bounty Hold'em v1.1.7 by Lee loaded. Type /poker to get started!|r")
+        print(teal .. "Bounty Hold'em v1.1.8 by Lee loaded. Type /poker to get started!|r")
     end
     local f = CreateFrame("Frame")
     f:RegisterEvent("ADDON_LOADED")
@@ -272,7 +272,7 @@ end
 RoleFrame.title = RoleFrame:CreateFontString(nil, "OVERLAY")
 RoleFrame.title:SetFontObject("GameFontHighlight")
 RoleFrame.title:SetPoint("LEFT", RoleFrame.TitleBg, "LEFT", 10, 0)
-RoleFrame.title:SetText("Bounty Hold'em v1.1.7 by Lee")
+RoleFrame.title:SetText("Bounty Hold'em v1.1.8 by Lee")
 
 -- Allow dragging the lobby frame
 RoleFrame:SetMovable(true)
@@ -407,7 +407,7 @@ TableFrame:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 TableFrame.title = TableFrame:CreateFontString(nil, "OVERLAY")
 TableFrame.title:SetFontObject("GameFontHighlight")
 TableFrame.title:SetPoint("LEFT", TableFrame.TitleBg, "LEFT", 10, 0)
-TableFrame.title:SetText("Bounty Hold'em v1.1.7 by Lee")
+TableFrame.title:SetText("Bounty Hold'em v1.1.8 by Lee")
 
 -- Vertical button stack, top left (110 x 28)
 local function CreateTopLeftBtn(label, anchorFrame)
@@ -3931,11 +3931,11 @@ invite.text:SetWidth(270)
 local inviteYes = CreateFrame("Button", nil, invite, "UIPanelButtonTemplate")
 inviteYes:SetSize(100, 24)
 inviteYes:SetPoint("BOTTOMRIGHT", invite, "BOTTOM", -6, 12)
-inviteYes:SetText("Play")
+inviteYes:SetText("Yes")
 local inviteNo = CreateFrame("Button", nil, invite, "UIPanelButtonTemplate")
 inviteNo:SetSize(100, 24)
 inviteNo:SetPoint("BOTTOMLEFT", invite, "BOTTOM", 6, 12)
-inviteNo:SetText("Not now")
+inviteNo:SetText("No")
 inviteNo:SetScript("OnClick", function() invite:Hide() end)
 inviteYes:SetScript("OnClick", function()
     invite:Hide()
@@ -3960,7 +3960,7 @@ local function ShowInvite(host)
         return
     end
     invitePending = nil
-    invite.text:SetText("|cffda70d6" .. host .. "|r has started a poker table.\nWant to play?")
+    invite.text:SetText("|cffda70d6" .. host .. "|r has started a poker table.\nDo you want to join?")
     invite:Show()
     PlaySoundFile(POKER_MEDIA .. "chips.MP3", "SFX")
 end
