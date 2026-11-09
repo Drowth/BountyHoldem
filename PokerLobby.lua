@@ -11,7 +11,6 @@ if POKER_OWNER and POKER_OWNER ~= (...) then return end
 local MEDIA = POKER_MEDIA
 local NEW_ART = true -- Set true once media\lobby_bg.tga (1280 x 672, no text) is in place
 local VERSION = "v1.2.2"
-local BG_COUNT = 5 -- media\\lobby_bg_1 to lobby_bg_5, plus the original lobby_bg
 
 local function Style()
     local ui = PokerUI
@@ -27,14 +26,13 @@ local function Style()
         bg:ClearAllPoints()
         bg:SetAllPoints(inset)
         bg:SetTexCoord(0, 1, 0, 1)
-        -- A different scene each time the lobby opens
-        local last
-        role:HookScript("OnShow", function()
-            local pick
-            repeat pick = math.random(0, BG_COUNT) until pick ~= last or BG_COUNT == 0
-            last = pick
-            bg:SetTexture(MEDIA .. (pick == 0 and "lobby_bg" or ("lobby_bg_" .. pick)))
-        end)
+        -- The scene you picked in the Shop
+        local function ShowScene()
+            local tex = PokerShop and PokerShop.SceneTexture and PokerShop.SceneTexture()
+            bg:SetTexture(MEDIA .. (tex or "lobby_bg"))
+        end
+        role:HookScript("OnShow", ShowScene)
+        ui.ShowLobbyScene = ShowScene
 
         local title = inset:CreateFontString(nil, "OVERLAY")
         title:SetFont("Fonts\\MORPHEUS.TTF", 64, "THICKOUTLINE")
@@ -162,7 +160,13 @@ local function Style()
             status:SetText(hosting and "|cff33ff33Your table is open. Join it, then pick a seat.|r"
                 or "|cff33ff33A table is open. Join now!|r")
         else
-            status:SetText("|cffbbbbbbNo table open yet. Host one, or wait for a friend to.|r")
+            local days = PokerSeason and PokerSeason.DaysLeft and PokerSeason.DaysLeft()
+            if days and days <= 7 then
+                status:SetText(("|cffffd100Season ends in %d day%s. Spend your chips in the Shop before they reset!|r")
+                    :format(days, days == 1 and "" or "s"))
+            else
+                status:SetText("|cffbbbbbbNo table open yet. Host one, or wait for a friend to.|r")
+            end
         end
     end)
 end
