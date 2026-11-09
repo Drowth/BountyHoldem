@@ -1,13 +1,16 @@
 # Changelog
 
-## 1.2.2 (2026-11-09)
+## 1.2.3 (2026-11-09)
 
-- Leaderboard button moved under Host Table so it no longer hides behind Join Table
-- New gold ? button for How to play
 - New Shop (chip-stack button at the top of the lobby). Spend chips on things that last: chips reset every season, purchases never do
 - Five lobby scenes to buy: Snowy Lodge, Moonlit Glade, Pirate Ship, Haunted Crypt and Goblin Casino
 - Four table felts to buy: Crimson, Royal Blue, Violet and Onyx. Everyone at your table sees the felt you use when you host
 - In the last week of a season the lobby reminds you to spend your chips before they reset
+
+## 1.2.2 (2026-11-08)
+
+- Leaderboard button moved under Host Table so it no longer hides behind Join Table
+- New gold ? button for How to play
 
 ## 1.2.1 (2026-11-08)
 
