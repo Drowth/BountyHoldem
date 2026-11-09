@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.2.1 by Lee
+-- Bounty Hold'em v1.2.2 by Lee
 -- PokerLobby.lua: restyled welcome window
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -10,7 +10,7 @@ if POKER_OWNER and POKER_OWNER ~= (...) then return end
 
 local MEDIA = POKER_MEDIA
 local NEW_ART = true -- Set true once media\lobby_bg.tga (1280 x 672, no text) is in place
-local VERSION = "v1.2.1"
+local VERSION = "v1.2.2"
 
 local function Style()
     local ui = PokerUI
@@ -85,16 +85,16 @@ local function Style()
         if not host then return end
         host:SetParent(bar)
         host:ClearAllPoints()
-        host:SetSize(130, 30)
-        host:SetPoint("RIGHT", bar, "RIGHT", -14, 4)
+        host:SetSize(130, 26)
+        host:SetPoint("RIGHT", bar, "RIGHT", -14, 15)
         host:SetFrameLevel(bar:GetFrameLevel() + 2)
     end
     PlaceHost()
 
-    -- Leaderboard button, left of Host
+    -- Leaderboard button, under Host
     local lb = CreateFrame("Button", nil, bar, "GameMenuButtonTemplate")
-    lb:SetSize(130, 30)
-    lb:SetPoint("RIGHT", bar, "RIGHT", -156, 4)
+    lb:SetSize(130, 26)
+    lb:SetPoint("RIGHT", bar, "RIGHT", -14, -15)
     lb:SetFrameLevel(bar:GetFrameLevel() + 2)
     lb:SetText("Leaderboard")
     lb:SetScript("OnClick", function(self)

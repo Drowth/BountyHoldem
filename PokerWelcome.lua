@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.2.1 by Lee
+-- Bounty Hold'em v1.2.2 by Lee
 -- PokerWelcome.lua: welcome window with how to play, shown on first load
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -171,9 +171,21 @@ local function AddLobbyButton()
         b:SetPoint("TOPRIGHT", role, "TOPRIGHT", -46, -30)
     end
     b:SetFrameLevel(role:GetFrameLevel() + 25)
-    b:SetNormalTexture("Interface\\Icons\\INV_Misc_QuestionMark")
-    b:GetNormalTexture():SetTexCoord(0.08, 0.92, 0.08, 0.92)
-    b:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+    -- Gold ? on the chip medallion, matching the welcome art
+    local chip = b:CreateTexture(nil, "ARTWORK")
+    chip:SetTexture(MEDIA .. "step_open")
+    chip:SetAllPoints()
+    chip:SetVertexColor(0.55, 0.45, 0.4)
+    local q = b:CreateFontString(nil, "OVERLAY")
+    q:SetFont("Fonts\\MORPHEUS.TTF", 22, "THICKOUTLINE")
+    q:SetTextColor(1, 0.82, 0.25)
+    q:SetPoint("CENTER", 1, 0)
+    q:SetText("?")
+    local hl = b:CreateTexture(nil, "HIGHLIGHT")
+    hl:SetTexture(MEDIA .. "step_open")
+    hl:SetAllPoints()
+    hl:SetBlendMode("ADD")
+    hl:SetAlpha(0.3)
     b:SetScript("OnClick", PokerWelcome_Show)
     b:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")

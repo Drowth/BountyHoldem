@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.2 (2026-11-08)
+
+- Leaderboard button moved under Host Table so it no longer hides behind Join Table
+- New gold ? button for How to play
+
 ## 1.2.1 (2026-11-08)
 
 - Welcome window on first load explains how to play, step by step

@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.2.1 by Lee
+-- Bounty Hold'em v1.2.2 by Lee
 -- PokerEconomy.lua: chip earning, saved balance and table sync
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle

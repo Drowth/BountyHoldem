@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.2.1 by Lee
+-- Bounty Hold'em v1.2.2 by Lee
 -- poker.lua: table client (lobby, table, seats, betting, animations)
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -232,7 +232,7 @@ end
 do
     local function PrintPokerWelcome_P()
         local teal = "|cff00cccc"
-        print(teal .. "Bounty Hold'em v1.2.1 by Lee loaded. Type /poker to get started!|r")
+        print(teal .. "Bounty Hold'em v1.2.2 by Lee loaded. Type /poker to get started!|r")
     end
     local f = CreateFrame("Frame")
     f:RegisterEvent("ADDON_LOADED")
@@ -272,7 +272,7 @@ end
 RoleFrame.title = RoleFrame:CreateFontString(nil, "OVERLAY")
 RoleFrame.title:SetFontObject("GameFontHighlight")
 RoleFrame.title:SetPoint("LEFT", RoleFrame.TitleBg, "LEFT", 10, 0)
-RoleFrame.title:SetText("Bounty Hold'em v1.2.1 by Lee")
+RoleFrame.title:SetText("Bounty Hold'em v1.2.2 by Lee")
 
 -- Allow dragging the lobby frame
 RoleFrame:SetMovable(true)
@@ -407,7 +407,7 @@ TableFrame:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 TableFrame.title = TableFrame:CreateFontString(nil, "OVERLAY")
 TableFrame.title:SetFontObject("GameFontHighlight")
 TableFrame.title:SetPoint("LEFT", TableFrame.TitleBg, "LEFT", 10, 0)
-TableFrame.title:SetText("Bounty Hold'em v1.2.1 by Lee")
+TableFrame.title:SetText("Bounty Hold'em v1.2.2 by Lee")
 
 -- Vertical button stack, top left (110 x 28)
 local function CreateTopLeftBtn(label, anchorFrame)
