@@ -11,6 +11,7 @@ if POKER_OWNER and POKER_OWNER ~= (...) then return end
 local MEDIA = POKER_MEDIA
 local NEW_ART = true -- Set true once media\lobby_bg.tga (1280 x 672, no text) is in place
 local VERSION = "v1.2.2"
+local BG_COUNT = 5 -- media\\lobby_bg_1 to lobby_bg_5, plus the original lobby_bg
 
 local function Style()
     local ui = PokerUI
@@ -26,6 +27,14 @@ local function Style()
         bg:ClearAllPoints()
         bg:SetAllPoints(inset)
         bg:SetTexCoord(0, 1, 0, 1)
+        -- A different scene each time the lobby opens
+        local last
+        role:HookScript("OnShow", function()
+            local pick
+            repeat pick = math.random(0, BG_COUNT) until pick ~= last or BG_COUNT == 0
+            last = pick
+            bg:SetTexture(MEDIA .. (pick == 0 and "lobby_bg" or ("lobby_bg_" .. pick)))
+        end)
 
         local title = inset:CreateFontString(nil, "OVERLAY")
         title:SetFont("Fonts\\MORPHEUS.TTF", 64, "THICKOUTLINE")

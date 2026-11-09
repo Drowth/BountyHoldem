@@ -4,6 +4,7 @@
 
 - Leaderboard button moved under Host Table so it no longer hides behind Join Table
 - New gold ? button for How to play
+- Five new lobby scenes (mountain lodge, pirate ship, goblin casino, haunted crypt, moonlit glade). The lobby shows a different one each time it opens
 
 ## 1.2.1 (2026-11-08)
 
