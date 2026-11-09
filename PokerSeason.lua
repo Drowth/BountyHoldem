@@ -201,6 +201,10 @@ function S.Tag(name)
     return " |T" .. BADGE .. ":12:12:0:0|t" .. (n > 1 and ("|cffffd100" .. n .. "|r") or "")
 end
 
+function S.DaysLeft()
+    return math.max(0, math.ceil((SeasonEnd() - time()) / 86400))
+end
+
 function S.Title()
     return "Chip leaderboard: " .. date("%B")
 end

@@ -17,6 +17,10 @@ Short on players? The host can fill empty seats with bots.
 
 The little stack of chips on your screen is your balance. It bounces every time a kill pays out. Open poker once a day for a free 100-chip bonus (once per account, not per character).
 
+## Shop
+
+Chips reset every season, so spend them. The Shop button at the top of the lobby sells lobby scenes and table felts. What you buy is yours for good, on every character, through every reset. When you host, everyone at your table sees your felt.
+
 ## Seasons
 
 Each month is a season. On the 1st, whoever has the most chips on your leaderboard wins it and earns a badge under their name on the player frame. Badges stack, one for every season you win. Then everyone's chips reset to 200 and the race starts again.

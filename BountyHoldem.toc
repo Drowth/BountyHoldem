@@ -21,3 +21,4 @@ PokerLobby.lua
 PokerSizeBar.lua
 PokerTableCues.lua
 PokerWelcome.lua
+PokerShop.lua
