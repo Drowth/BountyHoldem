@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.2.2 by Lee
+-- Bounty Hold'em v1.2.3 by Lee
 -- PokerWelcome.lua: welcome window with how to play, shown on first load
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle

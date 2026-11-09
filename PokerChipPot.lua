@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.2.2 by Lee
+-- Bounty Hold'em v1.2.3 by Lee
 -- PokerChipPot.lua: on-screen chip pot that fills as you earn chips
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle

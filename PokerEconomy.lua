@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.2.2 by Lee
+-- Bounty Hold'em v1.2.3 by Lee
 -- PokerEconomy.lua: chip earning, saved balance and table sync
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -499,6 +499,20 @@ function Econ.SeasonReset()
     if Econ.OnBalanceChanged then Econ.OnBalanceChanged() end
 end
 Econ.IsSeated = Seated
+
+-- Shop purchases come straight out of the bank; not while seated, where the
+-- table owns your stack
+function Econ.Spend(amount)
+    EnsureDB()
+    amount = math.floor(tonumber(amount) or 0)
+    if amount <= 0 then return true end
+    if Seated() then return false, "Stand up from the table first." end
+    if (db.chips or 0) < amount then return false, "Not enough chips." end
+    db.chips = db.chips - amount
+    RefreshDisplay()
+    if Econ.OnBalanceChanged then Econ.OnBalanceChanged() end
+    return true
+end
 
 function Econ.PrintStatus()
     EnsureDB()

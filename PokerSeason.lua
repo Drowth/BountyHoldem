@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.2.2 by Lee
+-- Bounty Hold'em v1.2.3 by Lee
 -- PokerSeason.lua: monthly seasons, chip resets and season badges
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
@@ -199,6 +199,10 @@ function S.Tag(name)
     local n = tonumber(SDB().counts[name]) or 0
     if n <= 0 then return "" end
     return " |T" .. BADGE .. ":12:12:0:0|t" .. (n > 1 and ("|cffffd100" .. n .. "|r") or "")
+end
+
+function S.DaysLeft()
+    return math.max(0, math.ceil((SeasonEnd() - time()) / 86400))
 end
 
 function S.Title()
