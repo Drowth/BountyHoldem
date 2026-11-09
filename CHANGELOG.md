@@ -4,7 +4,8 @@
 
 - New Shop (chip-stack button at the top of the lobby). Spend chips on things that last: chips reset every season, purchases never do
 - Five lobby scenes to buy: Snowy Lodge, Moonlit Glade, Pirate Ship, Haunted Crypt and Goblin Casino
-- Four table felts to buy: Crimson, Royal Blue, Violet and Onyx. Everyone at your table sees the felt you use when you host
+- Table felts to buy: Crimson, Royal Blue, Violet and Onyx, plus premium Royal Damask, Midnight Stars, Dragonscale and Arcane. Everyone at your table sees the felt you use when you host
+- Bloodmoon felt: free for anyone who has won a season badge, and can't be bought
 - In the last week of a season the lobby reminds you to spend your chips before they reset
 
 ## 1.2.2 (2026-11-08)

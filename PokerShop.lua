@@ -31,6 +31,11 @@ local FELTS = {
     { id = "royal",   name = "Royal Blue",    tex = "felt_royal",    price = 1000 },
     { id = "violet",  name = "Violet",        tex = "felt_violet",   price = 2500 },
     { id = "onyx",    name = "Onyx",          tex = "felt_onyx",     price = 8000 },
+    { id = "damask",  name = "Royal Damask",  tex = "felt_damask",   price = 10000 },
+    { id = "starry",  name = "Midnight Stars", tex = "felt_starry",  price = 10000 },
+    { id = "dragon",  name = "Dragonscale",   tex = "felt_dragonscale", price = 12000 },
+    { id = "arcane",  name = "Arcane",        tex = "felt_arcane",   price = 15000 },
+    { id = "bloodmoon", name = "Bloodmoon",   tex = "felt_bloodmoon", price = 0, champion = true },
 }
 local BY_ID = {}
 for _, it in ipairs(SCENES) do it.kind = "scene" BY_ID[it.id] = it end
@@ -42,7 +47,12 @@ local function Bank()
     return PokerBankDB
 end
 
-local function Owns(it) return it.price == 0 or Bank().owned[it.id] == true end
+-- Champion items come free with a season badge and can't be bought
+local function IsChampion() return #(Bank().badges or {}) > 0 end
+local function Owns(it)
+    if it.champion then return IsChampion() end
+    return it.price == 0 or Bank().owned[it.id] == true
+end
 
 local function Equipped(kind)
     local b = Bank()
@@ -157,6 +167,7 @@ end
 
 local function OnItemClick(it)
     if Owns(it) then Equip(it) return end
+    if it.champion then return end
     if Econ.IsSeated and Econ.IsSeated() then
         print("|cff00cccc[Poker]|r Stand up from the table before shopping.")
         return
@@ -170,7 +181,7 @@ local function OnItemClick(it)
 end
 
 -- == Shop window ==========================================================
-local CARD_W, CARD_H = 196, 158
+local CARD_W, CARD_H, COLS, ROWS = 164, 140, 4, 3
 local tab = "scene"
 
 local function Build()
@@ -178,7 +189,7 @@ local function Build()
     if not ok then f = CreateFrame("Frame", "PokerShopFrame", UIParent) end
     win = f
     f:Hide()
-    f:SetSize(3 * CARD_W + 4 * 12, 2 * CARD_H + 150)
+    f:SetSize(COLS * CARD_W + (COLS + 1) * 12, ROWS * CARD_H + (ROWS - 1) * 10 + 140)
     f:SetPoint("CENTER", 0, 20)
     f:SetFrameStrata("FULLSCREEN_DIALOG")
     f:SetClampedToScreen(true)
@@ -230,10 +241,10 @@ local function Build()
 
     -- Item cards
     f.cards = {}
-    for i = 1, 6 do
+    for i = 1, COLS * ROWS do
         local c = CreateFrame("Frame", nil, f, "BackdropTemplate")
         c:SetSize(CARD_W, CARD_H)
-        local col, row = (i - 1) % 3, math.floor((i - 1) / 3)
+        local col, row = (i - 1) % COLS, math.floor((i - 1) / COLS)
         c:SetPoint("TOPLEFT", f, "TOPLEFT", 12 + col * (CARD_W + 12), -96 - row * (CARD_H + 10))
         if c.SetBackdrop then
             c:SetBackdrop({
@@ -246,12 +257,12 @@ local function Build()
         end
         c.pic = c:CreateTexture(nil, "ARTWORK")
         c.pic:SetPoint("TOP", 0, -6)
-        c.pic:SetSize(CARD_W - 12, 92)
+        c.pic:SetSize(CARD_W - 12, 78)
         c.name = c:CreateFontString(nil, "OVERLAY")
-        c.name:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
+        c.name:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
         c.name:SetPoint("TOP", c.pic, "BOTTOM", 0, -4)
         c.btn = CreateFrame("Button", nil, c, "GameMenuButtonTemplate")
-        c.btn:SetSize(CARD_W - 40, 24)
+        c.btn:SetSize(CARD_W - 24, 24)
         c.btn:SetPoint("BOTTOM", 0, 6)
         f.cards[i] = c
     end
@@ -289,6 +300,9 @@ Refresh = function()
             elseif owned then
                 c.btn:SetText("Use")
                 c.btn:Enable()
+            elseif it.champion then
+                c.btn:SetText("Season champions")
+                c.btn:Disable()
             else
                 c.btn:SetText("Buy  " .. Commas(it.price))
                 c.btn:Enable()
