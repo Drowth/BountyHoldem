@@ -1,14 +1,17 @@
 -- =========================================================================
--- Bounty Hold'em v1.2.3 by Lee
--- PokerWelcome.lua: welcome window with how to play, shown on first load
+-- Bounty Hold'em v1.2.4 by Lee
+-- PokerWelcome.lua: welcome window with how to play, shown on first load,
+-- plus the Report a bug window with a copyable link to the issue tracker
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle
 if POKER_OWNER and POKER_OWNER ~= (...) then return end
 -- Shown once per account (PokerBankDB.welcomed). The ? button in the lobby
 -- opens it again
 
+local ADDON_NAME = ...
 local MEDIA = POKER_MEDIA
 local GOLD = "|cffffd100"
+local ISSUES_URL = "https://github.com/Drowth/BountyHoldem/issues"
 
 local STEPS = {
     { "step_open",   "Type /poker", "Or left-click the chip pot on your screen. This opens the lobby." },
@@ -139,7 +142,20 @@ local function Build()
     local close = ArtButton(f, "Close", 230, 58)
     close:SetPoint("TOPLEFT", f, "TOP", 8, y - 8)
     close:SetScript("OnClick", function() f:Hide() end)
-    f:SetHeight(-y + 86)
+
+    -- Small gold text link under the buttons
+    local bug = CreateFrame("Button", nil, f)
+    bug:SetPoint("TOP", f, "TOP", 0, y - 76)
+    local bugText = bug:CreateFontString(nil, "OVERLAY")
+    bugText:SetFont("Fonts\\FRIZQT__.TTF", 14, "OUTLINE")
+    bugText:SetPoint("CENTER")
+    bugText:SetTextColor(0.9, 0.85, 0.7)
+    bugText:SetText("Found a bug? " .. GOLD .. "Report a bug|r")
+    bug:SetSize((bugText:GetStringWidth() or 220) + 12, 22)
+    bug:SetScript("OnEnter", function() bugText:SetTextColor(1, 1, 1) end)
+    bug:SetScript("OnLeave", function() bugText:SetTextColor(0.9, 0.85, 0.7) end)
+    bug:SetScript("OnClick", function() PokerBugReport_Show() end)
+    f:SetHeight(-y + 116)
 
     local x = CreateFrame("Button", nil, f, "UIPanelCloseButton")
     x:SetPoint("TOPRIGHT", -6, -6)
@@ -155,6 +171,112 @@ end
 function PokerWelcome_Show()
     if not win then Build() end
     win:Show()
+end
+
+-- =========================================================================
+-- Report a bug: WoW can't open web links, so show the issue tracker URL in
+-- an edit box the player can copy from
+-- =========================================================================
+local bugWin
+
+local function AddonVersion()
+    local get = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
+    local v = get and get(ADDON_NAME, "Version")
+    return v or "unknown"
+end
+
+local function BuildBugWindow()
+    local ok, f = pcall(CreateFrame, "Frame", "PokerBugReportFrame", UIParent, "BackdropTemplate")
+    if not ok then f = CreateFrame("Frame", "PokerBugReportFrame", UIParent) end
+    bugWin = f
+    f:Hide()
+    f:SetSize(520, 250)
+    f:SetPoint("CENTER", 0, 60)
+    f:SetFrameStrata("FULLSCREEN_DIALOG")
+    f:SetToplevel(true)
+    f:SetClampedToScreen(true)
+    f:EnableMouse(true)
+    f:SetMovable(true)
+    f:RegisterForDrag("LeftButton")
+    f:SetScript("OnDragStart", f.StartMoving)
+    f:SetScript("OnDragStop", f.StopMovingOrSizing)
+    if f.SetBackdrop then
+        f:SetBackdrop({
+            bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+            edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Border",
+            tile = true, tileSize = 32, edgeSize = 32,
+            insets = { left = 10, right = 10, top = 10, bottom = 10 },
+        })
+    end
+    tinsert(UISpecialFrames, "PokerBugReportFrame") -- Escape closes it
+
+    local title = f:CreateFontString(nil, "OVERLAY")
+    title:SetFont("Fonts\\MORPHEUS.TTF", 26, "THICKOUTLINE")
+    title:SetPoint("TOP", 0, -22)
+    title:SetTextColor(1, 0.82, 0.25)
+    title:SetText("Report a bug")
+
+    local body = f:CreateFontString(nil, "OVERLAY")
+    body:SetFont("Fonts\\FRIZQT__.TTF", 13, "")
+    body:SetShadowOffset(1, -1)
+    body:SetTextColor(0.94, 0.92, 0.88)
+    body:SetWidth(460)
+    body:SetJustifyH("LEFT")
+    body:SetSpacing(2)
+    body:SetPoint("TOP", 0, -60)
+    body:SetText("Copy this link (Ctrl+C) and open it in your web browser, then click "
+        .. GOLD .. "New issue|r. You'll need a free GitHub account.\n\n"
+        .. "Say what happened and how to make it happen again. If you saw a Lua error, paste the error text too.")
+
+    -- Plain EditBox with its own dark strip, so it works with or without InputBoxTemplate
+    local box = CreateFrame("EditBox", nil, f)
+    box:SetSize(440, 26)
+    box:SetPoint("TOP", body, "BOTTOM", 0, -14)
+    box:SetAutoFocus(false)
+    box:SetFontObject(ChatFontNormal)
+    box:SetTextInsets(8, 8, 0, 0)
+    box:SetJustifyH("CENTER")
+    local strip = box:CreateTexture(nil, "BACKGROUND")
+    strip:SetColorTexture(0, 0, 0, 0.7)
+    strip:SetAllPoints()
+    local edge = box:CreateTexture(nil, "BORDER")
+    edge:SetColorTexture(1, 0.82, 0.25, 0.5)
+    edge:SetPoint("TOPLEFT", -1, 1)
+    edge:SetPoint("BOTTOMRIGHT", 1, -1)
+    local function Reset(self)
+        self:SetText(ISSUES_URL)
+        self:HighlightText()
+    end
+    -- Read only: any typing puts the link back
+    box:SetScript("OnTextChanged", function(self, user) if user then Reset(self) end end)
+    box:SetScript("OnEditFocusGained", Reset)
+    box:SetScript("OnMouseUp", Reset)
+    box:SetScript("OnEscapePressed", function() f:Hide() end)
+    box:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+    f.box = box
+
+    local ver = f:CreateFontString(nil, "OVERLAY")
+    ver:SetFont("Fonts\\FRIZQT__.TTF", 12, "")
+    ver:SetTextColor(0.7, 0.7, 0.7)
+    ver:SetPoint("TOP", box, "BOTTOM", 0, -12)
+    f.ver = ver
+
+    local x = CreateFrame("Button", nil, f, "UIPanelCloseButton")
+    x:SetPoint("TOPRIGHT", -6, -6)
+
+    f:SetScript("OnShow", function(self)
+        self.ver:SetText("Your version: " .. AddonVersion() .. "  (include this in your report)")
+        self.box:SetText(ISSUES_URL)
+        self.box:SetFocus()
+        self.box:HighlightText()
+    end)
+    f:SetScript("OnHide", function(self) self.box:ClearFocus() end)
+end
+
+function PokerBugReport_Show()
+    if not bugWin then BuildBugWindow() end
+    bugWin:Show()
+    bugWin:Raise()
 end
 
 -- ? button in the lobby, beside the volume gear

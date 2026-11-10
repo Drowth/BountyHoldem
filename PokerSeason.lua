@@ -1,5 +1,5 @@
 -- =========================================================================
--- Bounty Hold'em v1.2.3 by Lee
+-- Bounty Hold'em v1.2.4 by Lee
 -- PokerSeason.lua: monthly seasons, chip resets and season badges
 -- =========================================================================
 -- Only one installed copy runs; a second folder (e.g. an old Poker install) stays idle

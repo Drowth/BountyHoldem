@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.4 (2026-11-10)
+
+- Found a bug? Open How to play (the gold ? in the lobby) and click Report a bug. It shows a link you can copy into your browser, plus your addon version to include
+- Bug reports now have a form on GitHub that asks for the details needed to fix things quickly
+
 ## 1.2.3 (2026-11-09)
 
 - New Shop (chip-stack button at the top of the lobby). Spend chips on things that last: chips reset every season, purchases never do
