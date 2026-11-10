@@ -47,4 +47,8 @@ Each month is a season. On the 1st, whoever has the most chips on your leaderboa
 - Chips are just for fun. They have no gold value and can't be traded.
 - Balances are kept on your own PC, so it runs on trust.
 
+## Found a bug?
+
+Report it at https://github.com/Drowth/BountyHoldem/issues (you'll need a free GitHub account). In game, open How to play with the gold ? in the lobby and click Report a bug to get a copyable link. If you saw a Lua error, paste the error text in your report. BugSack makes this easy.
+
 Made by Lee.

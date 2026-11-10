@@ -1,0 +1,51 @@
+name: Bug report
+description: Something in Bounty Hold'em isn't working right
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. The more detail you give, the faster it gets fixed.
+  - type: input
+    id: version
+    attributes:
+      label: Addon version
+      description: Shown in the Report a bug window in game, and in the title of the poker window.
+      placeholder: "1.2.4"
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What went wrong, and what did you expect to happen instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How do I make it happen again?
+      description: Step by step, if you can. Say whether you were hosting, joining, playing solo or with bots.
+      placeholder: |
+        1. Host a table with two bots
+        2. Deal a hand
+        3. Fold on the river
+        4. ...
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Lua error text
+      description: If you saw a Lua error, paste the whole thing here. BugSack and BugGrabber make this easy to copy.
+      render: text
+  - type: input
+    id: players
+    attributes:
+      label: Who was at the table?
+      description: How many players and bots, and whether everyone was on the same addon version.
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Screenshots, other addons you think might clash, anything that helps.
